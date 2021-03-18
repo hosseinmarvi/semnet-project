@@ -1,1 +1,1 @@
-# semnet-project
+# SemNet Project
