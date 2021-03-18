@@ -9,7 +9,7 @@ Created on Thu May 28 19:48:35 2020
 import mne
 import numpy as np
 import os
-import SN_config as C
+import sn_config as C
 from matplotlib import pyplot as plt
 from mne.epochs import equalize_epoch_counts
 
@@ -53,11 +53,11 @@ for i in np.arange(0, len(subjects)):
     evoked_SD_words = epochs_SD['words'].average()
     evoked_LD_words = epochs_LD['words'].average()
     
-    C.all_evokeds_SD_words.append(evoked_SD_words)
-    C.all_evokeds_LD_words.append(evoked_LD_words)
+    C.all_evokeds_sd_words.append(evoked_SD_words)
+    C.all_evokeds_ld_words.append(evoked_LD_words)
 
-    C.all_SD_words_nave = C.all_SD_words_nave + evoked_SD_words.nave
-    C.all_LD_words_nave = C.all_LD_words_nave + evoked_LD_words.nave
+    C.all_sd_words_nave = C.all_sd_words_nave + evoked_SD_words.nave
+    C.all_ld_words_nave = C.all_ld_words_nave + evoked_LD_words.nave
 
     # ## SD Task     
     # # eeg/mag/grad Grand Average for each individual   
@@ -87,14 +87,14 @@ for i in np.arange(0, len(subjects)):
 
 
 # Grand Average across individuals    
-Grand_Average_SD_words = mne.grand_average(C.all_evokeds_SD_words)
-Grand_Average_LD_words = mne.grand_average(C.all_evokeds_LD_words)
+Grand_Average_SD_words = mne.grand_average(C.all_evokeds_sd_words)
+Grand_Average_LD_words = mne.grand_average(C.all_evokeds_ld_words)
 # SD Task    
 #eeg/mag/grad Grand Average for each individual   
 for i in np.arange(0,len(C.plot_peaks)):
-    Grand_Average_SD_words.plot_joint( times=[0.090,0.135,0.198,0.298],picks = C.plot_peaks[i], 
-          title='Grand Average ('+ C.plot_peaks[i]+')- SD_Words - Nave: '+
-          str(C.all_SD_words_nave),topomap_args=C.topomap_args,ts_args=C.ts_args)
+    Grand_Average_SD_words.plot_joint(times=[0.090,0.135,0.198,0.298], picks = C.plot_peaks[i],
+                                      title='Grand Average ('+ C.plot_peaks[i]+')- SD_Words - Nave: '+
+          str(C.all_sd_words_nave), topomap_args=C.topomap_args, ts_args=C.ts_args)
     
     plt.savefig(pictures_path + 'Grand_Average_SD_Words_'+C.plot_peaks[i])   
 
@@ -102,9 +102,9 @@ for i in np.arange(0,len(C.plot_peaks)):
 ## LD Task 
 # eeg/mag/grad Grand Average for each individual   
 for i in np.arange(0,len(C.plot_peaks)):
-    Grand_Average_LD_words.plot_joint( times=[0.090,0.135,0.198,0.298],picks = C.plot_peaks[i], 
-          title='Grand Average ('+ C.plot_peaks[i]+')- LD_Words - Nave: '+
-          str(C.all_LD_words_nave),ts_args=C.ts_args,topomap_args=C.topomap_args)
+    Grand_Average_LD_words.plot_joint(times=[0.090,0.135,0.198,0.298], picks = C.plot_peaks[i],
+                                      title='Grand Average ('+ C.plot_peaks[i]+')- LD_Words - Nave: '+
+          str(C.all_ld_words_nave), ts_args=C.ts_args, topomap_args=C.topomap_args)
     
     
     plt.savefig(pictures_path + 'Grand_Average_LD_Words_'+C.plot_peaks[i])   

@@ -10,7 +10,7 @@ import mne
 import time
 import pickle
 import numpy as np
-import SN_config as C
+import sn_config as C
 from joblib import Parallel, delayed
 from SN_semantic_ROIs import SN_semantic_ROIs
 from mne.minimum_norm import apply_inverse_epochs, read_inverse_operator
@@ -21,7 +21,7 @@ from sklearn.linear_model import RidgeCV
 data_path = C.data_path
 main_path = C.main_path
 subjects = C.subjects
-MRI_sub = C.subjects_MRI
+MRI_sub = C.subjects_mri
 # Parameters
 snr = C.snr
 lambda2 = C.lambda2_epoch

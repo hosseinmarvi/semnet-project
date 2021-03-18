@@ -7,7 +7,7 @@ Created on Thu Mar  5 19:16:48 2020
 import mne
 import os
 import numpy as np
-import SN_config as C
+import sn_config as C
 
 # path to maxfiltered raw data
 data_path = C.data_path

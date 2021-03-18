@@ -10,7 +10,7 @@ Created on Thu Mar  5 22:45:41 2020
 import mne
 import os
 import numpy as np
-import SN_config as C
+import sn_config as C
 from mne.preprocessing import ICA
 from mne.preprocessing import create_ecg_epochs
 
@@ -21,7 +21,7 @@ data_path = C.data_path
 # ICA parameters
 n_components = C.n_components 
 n_max_ecg = C.n_max_ecg
-method = C.ICA_method
+method = C.ica_method
 decim  = C.decim 
 
 # subjects' directories

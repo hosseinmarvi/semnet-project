@@ -8,7 +8,7 @@ Created on Fri Mar  6 14:29:15 2020
 import mne
 import os
 import numpy as np
-import SN_config as C
+import sn_config as C
 
 
 # path to filtered raw data
@@ -20,8 +20,8 @@ stim_delay = C.stim_delay
 category_code = C.category_code
 
 # Events info
-event_id_SD = C.event_id_SD
-event_id_LD = C.event_id_LD
+event_id_SD = C.event_id_sd
+event_id_LD = C.event_id_ld
  
 reject = C.reject
 

@@ -11,7 +11,7 @@ import sys
 import time
 import pickle
 import numpy as np
-import SN_config as C
+import sn_config as C
 from numpy.linalg import inv
 from sklearn import linear_model
 from mne.epochs import equalize_epoch_counts
@@ -24,7 +24,7 @@ from sklearn.metrics import mean_squared_error, r2_score, explained_variance_sco
 data_path = C.data_path
 main_path = C.main_path
 subjects =  C.subjects
-MRI_sub = C.subjects_MRI
+MRI_sub = C.subjects_mri
 # Parameters
 snr = C.snr
 lambda2 = C.lambda2_epoch

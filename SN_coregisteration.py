@@ -9,7 +9,7 @@ Created on Mon Apr 27 17:36:05 2020
 # sys.path.append('/imaging/local/software/miniconda/lib/python3.7/site-packages/')
 import numpy as np
 import mne
-import SN_config as C
+import sn_config as C
 
 data_path = C.data_path
 # Freesurfer and MNE environment variables
@@ -17,7 +17,7 @@ filename = "/imaging/local/software/mne_python/set_MNE_2.7.3_FS_6.0.0_environ.py
 # for Python 3 instead of execfile
 exec(compile(open(filename, "rb").read(), filename, 'exec'))
  
-subjects =  C.subjects_MRI
+subjects =  C.subjects_mri
     
 for i in np.arange(0,len(subjects)):
 

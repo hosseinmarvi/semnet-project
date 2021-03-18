@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 from mne.minimum_norm import apply_inverse_epochs, apply_inverse, read_inverse_operator
 from mne.connectivity import spectral_connectivity,seed_target_indices, phase_slope_index
 from mne.viz import circular_layout, plot_connectivity_circle
-import SN_config as C
+import sn_config as C
 from surfer import Brain
 from SN_semantic_ROIs import SN_semantic_ROIs
 from SN_stc_baseline_correction import stc_baseline_correction
@@ -32,7 +32,7 @@ start=time.time()
 data_path = C.data_path
 main_path = C.main_path
 subjects =  C.subjects
-MRI_sub = C.subjects_MRI
+MRI_sub = C.subjects_mri
 SN_ROI = SN_semantic_ROIs()    
 
 # Parameters
@@ -115,7 +115,7 @@ def SN_effective_connectivity_bands(i,method):
 
         for k in np.arange(0,6):
             print('Participant : ' , i, '/ ROI: ',k)
-            morphed_labels[k].name = C.ROIs_lables[k] 
+            morphed_labels[k].name = C.rois_labels[k]
     
             seed_ts_sd = mne.extract_label_time_course(stc_SD, morphed_labels[k], \
                        src_SD, mode='mean_flip',return_generator=False)

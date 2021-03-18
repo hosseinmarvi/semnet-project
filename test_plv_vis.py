@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 from mne.minimum_norm import apply_inverse_epochs, apply_inverse, read_inverse_operator
 from mne.connectivity import spectral_connectivity,seed_target_indices, phase_slope_index
 from mne.viz import circular_layout, plot_connectivity_circle
-import SN_config as C
+import sn_config as C
 from surfer import Brain
 from SN_semantic_ROIs import SN_semantic_ROIs
 from SN_stc_baseline_correction import stc_baseline_correction
@@ -31,7 +31,7 @@ start=time.time()
 data_path = C.data_path
 main_path = C.main_path
 subjects =  C.subjects
-MRI_sub = C.subjects_MRI
+MRI_sub = C.subjects_mri
 # Parameters
 snr = C.snr
 lambda2 = C.lambda2
@@ -245,8 +245,8 @@ for k in np.arange(3,4):
     # brain = stc_cluster_vis.plot(surface='inflated', hemi='split',subject =\
     #     'fsaverage',  subjects_dir=data_path,size=(800,400))
       
-    brain.save_image(C.pictures_path_Source_estimate+'Connectivity_PLV_'+\
-                      C.ROIs_lables[k]+'.png')
+    brain.save_image(C.pictures_path_Source_estimate +'Connectivity_PLV_' + \
+                     C.rois_labels[k] + '.png')
            
     
  

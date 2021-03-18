@@ -16,7 +16,7 @@ from mne.minimum_norm import apply_inverse_epochs, read_inverse_operator
 from mne.connectivity import spectral_connectivity
 from mne.viz import circular_layout, plot_connectivity_circle
 from mne.epochs import equalize_epoch_counts
-import SN_config as C
+import sn_config as C
 from surfer import Brain
 # path to raw data
 data_path = C.data_path
@@ -35,15 +35,15 @@ def sort_matrix(X,a):
             if np.abs(X[i,j])<X_threshold :
                 X[i,j]=0
             
-    return X       
+    return X
 
-       
-C.ImCoh_SD_LD[win,freq,:,:]
-C.ImCoh_SD_sorted[win,freq,:,:]  
-C.ImCoh_LD_sorted[win,freq,:,:]   
 
-ImCoh_SD_sort_0 = sort_matrix(C.ImCoh_SD_sorted[0,0,:,:] ,50)
-ImCoh_SD_sort_1 = sort_matrix(C.ImCoh_SD_sorted[1,0,:,:] ,50)
+C.im_coh_sd_ld[win, freq, :, :]
+C.im_coh_sd_sorted[win, freq, :, :]
+C.im_coh_ld_sorted[win, freq, :, :]
 
-ImCoh_LD_sort_0 = sort_matrix(C.ImCoh_LD_sorted[0,0,:,:] ,50)
-ImCoh_LD_sort_1 = sort_matrix(C.ImCoh_LD_sorted[1,0,:,:] ,50)
+ImCoh_SD_sort_0 = sort_matrix(C.im_coh_sd_sorted[0, 0, :, :], 50)
+ImCoh_SD_sort_1 = sort_matrix(C.im_coh_sd_sorted[1, 0, :, :], 50)
+
+ImCoh_LD_sort_0 = sort_matrix(C.im_coh_ld_sorted[0, 0, :, :], 50)
+ImCoh_LD_sort_1 = sort_matrix(C.im_coh_ld_sorted[1, 0, :, :], 50)

@@ -14,7 +14,7 @@ from mne.minimum_norm import apply_inverse_epochs, read_inverse_operator
 from mne.connectivity import spectral_connectivity
 from mne.viz import circular_layout, plot_connectivity_circle
 from mne.epochs import equalize_epoch_counts
-import SN_config as C
+import sn_config as C
 from surfer import Brain
 from SN_semantic_ROIs import SN_semantic_ROIs
 from SN_stc_baseline_correction import stc_baseline_correction
@@ -33,7 +33,7 @@ import statsmodels.stats.multicomp as multi
 data_path = C.data_path
 main_path = C.main_path
 subjects =  C.subjects
-MRI_sub = C.subjects_MRI
+MRI_sub = C.subjects_mri
 # Parameters
 snr = C.snr
 lambda2 = C.lambda2
@@ -121,9 +121,9 @@ for win in np.arange(0, len(C.con_time_window)):
             con_LD,freqs_LD,times_LD,n_epochs_LD,n_tapers_LD=spectral_connectivity(\
                         LD,method='imcoh', mode='fourier',sfreq=C.sfreq,\
                         fmin=fmin,fmax=fmax,n_jobs=3,faverage=True,)
-                
-            C.ImCoh_SD[win,freq,i,:,:] = con_SD.copy().mean(2)   
-            C.ImCoh_LD[win,freq,i,:,:] = con_LD.copy().mean(2) 
+
+            C.im_coh_sd[win, freq, i, :, :] = con_SD.copy().mean(2)
+            C.im_coh_ld[win, freq, i, :, :] = con_LD.copy().mean(2)
 #         # C.ImCoh_SD_sorted[win,freq,:,:] = sort_matrix(C.ImCoh_SD[win,freq,:,:,:].copy().mean(0),
 #         #                              50)
 #         # C.ImCoh_LD_sorted[win,freq,:,:] = sort_matrix(C.ImCoh_LD[win,freq,:,:,:].copy().mean(0),
@@ -135,8 +135,8 @@ for win in np.arange(0, len(C.con_time_window)):
 #         C.ImCoh_LD_sorted[win,freq,:,:] = C.ImCoh_LD[win,freq,:,:,:].copy().mean(0)  
 
 
-X_SD = matrix_mirror(np.swapaxes(C.ImCoh_SD.copy(),2,0))
-X_LD = matrix_mirror(np.swapaxes(C.ImCoh_LD.copy(),2,0))
+X_SD = matrix_mirror(np.swapaxes(C.im_coh_sd.copy(), 2, 0))
+X_LD = matrix_mirror(np.swapaxes(C.im_coh_ld.copy(), 2, 0))
 
 X = np.zeros([18,8,6,6])
 X[:,0,:,:] = X_SD[:,0,0,:,:]
@@ -183,12 +183,12 @@ for effect, sig, effect_label in zip(fvalss, pvalss, effect_labels):
 # # Con_LD = dict()
 
 
-con_SD_LD['imcoh'] = C.ImCoh_SD_LD
-Con_SD['imcoh'] = C.ImCoh_SD_sorted
-Con_LD['imcoh'] = C.ImCoh_LD_sorted
-vmax_SD_LD = max(abs(C.ImCoh_SD_LD.max()), abs(C.ImCoh_SD_LD.min()))
-vmax_SD = max(abs(C.ImCoh_SD.max()), abs(C.ImCoh_SD.min()))
-vmax_LD = max(abs(C.ImCoh_LD.max()), abs(C.ImCoh_LD.min()))
+con_SD_LD['imcoh'] = C.im_coh_sd_ld
+Con_SD['imcoh'] = C.im_coh_sd_sorted
+Con_LD['imcoh'] = C.im_coh_ld_sorted
+vmax_SD_LD = max(abs(C.im_coh_sd_ld.max()), abs(C.im_coh_sd_ld.min()))
+vmax_SD = max(abs(C.im_coh_sd.max()), abs(C.im_coh_sd.min()))
+vmax_LD = max(abs(C.im_coh_ld.max()), abs(C.im_coh_ld.min()))
 vmax = max(vmax_SD_LD,vmax_SD,vmax_LD)
 vmin = -vmax
 
@@ -199,9 +199,9 @@ for win in np.arange(0, len(C.con_time_window)):
   
         fmin = C.con_freq_band[freq]
         fmax = C.con_freq_band[freq+1]             
-        con_SD_LD['imcoh'] = C.ImCoh_SD_LD[win,freq,:,:]         
-        Con_SD['imcoh'] = C.ImCoh_SD_sorted[win,freq,:,:] 
-        Con_LD['imcoh'] = C.ImCoh_LD_sorted[win,freq,:,:] 
+        con_SD_LD['imcoh'] = C.im_coh_sd_ld[win, freq, :, :]
+        Con_SD['imcoh'] = C.im_coh_sd_sorted[win, freq, :, :]
+        Con_LD['imcoh'] = C.im_coh_ld_sorted[win, freq, :, :]
         
         # labels = mne.read_labels_from_annot( 'fsaverage', parc='aparc',
         #                                     subjects_dir=C.data_path)

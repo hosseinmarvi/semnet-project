@@ -17,7 +17,7 @@ from mne.minimum_norm import apply_inverse_epochs, read_inverse_operator
 from mne.connectivity import spectral_connectivity
 from mne.viz import circular_layout, plot_connectivity_circle
 from mne.epochs import equalize_epoch_counts
-import SN_config as C
+import sn_config as C
 from surfer import Brain
 from SN_semantic_ROIs import SN_semantic_ROIs
 from SN_stc_baseline_correction import stc_baseline_correction
@@ -39,7 +39,7 @@ import os
 data_path = C.data_path
 main_path = C.main_path
 subjects =  C.subjects
-MRI_sub = C.subjects_MRI
+MRI_sub = C.subjects_mri
 # Parameters
 snr = C.snr_epoch
 lambda2 = C.lambda2_epoch
@@ -105,7 +105,7 @@ for i in np.arange(0,len(C.subjects)):
     src_LD = inv_op_LD['src']
    
     for k in np.arange(0,6):
-        morphed_labels[k].name = C.ROIs_lables[k] 
+        morphed_labels[k].name = C.rois_labels[k]
     if len(stc_sd)>400:
         for t, a in enumerate(nb_trails_SD):
             for n in np.arange(0,a):

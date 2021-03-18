@@ -9,7 +9,7 @@ Created on Fri Sep 11 11:21:53 2020
 
 import numpy as np
 import mne
-import SN_config as C
+import sn_config as C
 import SN_semantic_ROIs 
 from mne.minimum_norm import apply_inverse, read_inverse_operator
 from scipy import stats
@@ -52,12 +52,12 @@ def stc_baseline_correction(X,tmin,tmax):
 
 import numpy as np
 import mne
-import SN_config as C
+import sn_config as C
 # path to raw data
 data_path = C.data_path
 main_path = C.main_path
 subjects =  C.subjects
-MRI_sub = C.subjects_MRI_files
+MRI_sub = C.subjects_mri_files
 
 def SN_semantic_ROIs():
     # Loading Human Connectom Project parcellation

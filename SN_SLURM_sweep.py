@@ -17,7 +17,7 @@ from os import path as op
 from importlib import reload
 
 # import study parameters
-import SN_config as C
+import sn_config as C
 import numpy as np
 reload(C)
 

@@ -10,13 +10,13 @@ import mne
 # import os
 import numpy as np
 from mne import make_forward_solution
-import SN_config as C
+import sn_config as C
 
 
 # path to raw data
 data_path = C.data_path
 main_path = C.main_path
-subjects =  C.subjects_MRI
+subjects =  C.subjects_mri
 
 
 for i in np.arange(0, len(subjects)):

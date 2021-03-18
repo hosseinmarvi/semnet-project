@@ -9,7 +9,7 @@ Created on Sun May 17 13:45:41 2020
 
 import mne
 import numpy as np
-import SN_config as C
+import sn_config as C
 from mne.minimum_norm import read_inverse_operator 
 
 
@@ -17,7 +17,7 @@ from mne.minimum_norm import read_inverse_operator
 main_path = C.main_path
 data_path = C.data_path
 # subjects' directories
-subjects =  C.subjects_MRI
+subjects =  C.subjects_mri
  
 for i in np.arange(0, len(subjects)):
     print('participant : ' , i , ' / EEG + MEG')

@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 from mne.minimum_norm import apply_inverse_epochs, apply_inverse, read_inverse_operator
 from mne.connectivity import spectral_connectivity,seed_target_indices, phase_slope_index
 from mne.viz import circular_layout, plot_connectivity_circle
-import SN_config as C
+import sn_config as C
 from surfer import Brain
 from SN_semantic_ROIs import SN_semantic_ROIs
 from SN_stc_baseline_correction import stc_baseline_correction
@@ -34,7 +34,7 @@ start=time.time()
 data_path = C.data_path
 main_path = C.main_path
 subjects =  C.subjects
-MRI_sub = C.subjects_MRI
+MRI_sub = C.subjects_mri
 # Parameters
 snr = C.snr
 lambda2 = C.lambda2
@@ -163,13 +163,13 @@ for w in np.arange(1,2):
                 data = stc_all_cluster_vis.data[:, idx]
                 thresh = max(([abs(data.min()) , abs(data.max())]))
                 
-                brain = stc_all_cluster_vis.plot(surface='inflated', hemi='split',subject =\
-                    'fsaverage',  subjects_dir=data_path, clim=dict(kind='value', pos_lims=\
-                    [thresh/10,thresh/5,thresh]),size=(800,400),colormap='mne',time_label=\
-                      'SD-LD: '+C.ROIs_lables[k]+'_'+w_label[w]+'_'+f_label[f])
+                brain = stc_all_cluster_vis.plot(surface='inflated', hemi='split', subject =\
+                    'fsaverage', subjects_dir=data_path, clim=dict(kind='value', pos_lims=\
+                    [thresh/10,thresh/5,thresh]), size=(800,400), colormap='mne', time_label=\
+                      'SD-LD: ' + C.rois_labels[k] + '_' + w_label[w] + '_' + f_label[f])
                 
-                brain.save_image(C.pictures_path_Source_estimate+'t-test_'+method+\
-                                  C.ROIs_lables[k]+'_'+w_label[w]+'_'+f_label[f]+'.png')
+                brain.save_image(C.pictures_path_Source_estimate +'t-test_' + method + \
+                                 C.rois_labels[k] + '_' + w_label[w] + '_' + f_label[f] + '.png')
             else:
                 not_sig.append([w,k,f])
            

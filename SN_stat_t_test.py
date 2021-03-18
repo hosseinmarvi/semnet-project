@@ -8,7 +8,7 @@ Created on Sat Jun 20 16:33:02 2020
 
 import mne
 import numpy as np
-import SN_config as C
+import sn_config as C
 from mne.epochs import equalize_epoch_counts
 from mne.minimum_norm import apply_inverse, read_inverse_operator
 from scipy import stats

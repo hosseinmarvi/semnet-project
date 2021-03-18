@@ -9,7 +9,7 @@ Created on Sat May 23 00:47:10 2020
 
 import mne
 import numpy as np
-import SN_config as C
+import sn_config as C
 import matplotlib.pyplot as plt
 import os
 
@@ -21,7 +21,7 @@ pictures_path = C.pictures_path_Source_estimate
 
 
 # subjects' directories
-subjects =  C.subjects_MRI
+subjects =  C.subjects_mri
 
 print("Please enter the participant number (in the range of : [0,18] ):\n")
 i = input("The participant number is:\n")
@@ -41,22 +41,22 @@ value1 = input("Your selected block is:\n")
 
 if value1==('fruit' or 'odour' or 'milk'):
     print("Please enter your categories from the list bellow:\n")
-    print(C.categories_SD)
+    print(C.categories_sd)
     value2 = input("Your selected category is:\n") 
-    if (value2 not in C.categories_SD or value2=='words'):
+    if (value2 not in C.categories_sd or value2== 'words'):
         print('ERROR!')
         print("Please enter your categories from the list bellow:\n")
-        print(C.categories_SD)
+        print(C.categories_sd)
         value2 = input("Your selected category is:\n") 
         
 if value1=='LD':
     print("Please enter your categories from the list bellow:\n")
-    print(C.categories_LD)
+    print(C.categories_ld)
     value2 = input("Your selected category is:\n")
-    if value2 not in C.categories_LD:
+    if value2 not in C.categories_ld:
         print('ERROR!')
         print("Please enter your categories from the list bellow:\n")
-        print(C.categories_LD)
+        print(C.categories_ld)
         value2 = input("Your selected category is:\n")
     
 if value1=='SD':

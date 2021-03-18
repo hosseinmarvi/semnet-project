@@ -11,7 +11,7 @@ import sys
 import time
 import pickle
 import numpy as np
-import SN_config as C
+import sn_config as C
 import matplotlib.pyplot as plt
 from numpy.linalg import inv
 from sklearn import linear_model
@@ -47,7 +47,7 @@ def mask_function(X, cut_off=None):
 data_path = C.data_path
 main_path = C.main_path
 subjects = C.subjects
-MRI_sub = C.subjects_MRI
+MRI_sub = C.subjects_mri
 # Parameters
 snr = C.snr
 lambda2 = C.lambda2_epoch
@@ -329,7 +329,7 @@ for ROI_y in np.arange(0, 6):
 #                                 orientation='vertical')
 
 
-lb = C.ROIs_lables
+lb = C.rois_labels
 t1, t2 = [-200, 900]
 # # difference of SD (0:6) and LD(6:12) for aech ROI and individual
 Z = X_SD-X_LD

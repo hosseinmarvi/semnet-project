@@ -7,7 +7,7 @@ Created on Tue Sep 15 15:10:38 2020
 """
 import mne
 import numpy as np
-import SN_config as C
+import sn_config as C
 from SN_semantic_ROIs import SN_semantic_ROIs
 from SN_semantic_ROIs_rl import SN_semantic_ROIs_rl
 
@@ -25,7 +25,7 @@ from mne.stats import (permutation_cluster_1samp_test,
 data_path = C.data_path
 main_path = C.main_path
 subjects =  C.subjects
-MRI_sub = C.subjects_MRI
+MRI_sub = C.subjects_mri
 epochs_names = C.epochs_names
 inv_op_name = C.inv_op_name
 

@@ -8,7 +8,7 @@ Created on Sat Aug 29 11:12:47 2020
 
 import numpy as np
 import mne
-import SN_config as C
+import sn_config as C
 from surfer import Brain
 # path to raw data
 data_path = C.data_path
@@ -330,7 +330,7 @@ my_labels = [l_ATL,r_ATL,V1,TG,AG,IFG]
 #atl = mne.read_label(data_path+ 'R_ATL_myROI_rh.label')    
 import numpy as np
 import mne
-import SN_config as C
+import sn_config as C
 from surfer import Brain
 
 import mne
@@ -339,7 +339,7 @@ from mne.minimum_norm import apply_inverse, read_inverse_operator, source_induce
 from mne.connectivity import spectral_connectivity
 from mne.viz import circular_layout, plot_connectivity_circle
 from mne.epochs import equalize_epoch_counts
-import SN_config as C
+import sn_config as C
 from surfer import Brain
 from mne.time_frequency import tfr_morlet
 

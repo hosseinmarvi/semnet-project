@@ -9,7 +9,7 @@ Created on Tue Jul 14 15:55:20 2020
 
 import numpy as np
 import mne
-import SN_config as C
+import sn_config as C
 from surfer import Brain
 # path to raw data
 data_path = C.data_path

@@ -9,7 +9,7 @@ Created on Fri Sep 11 11:15:28 2020
 
 import numpy as np
 import mne
-import SN_config as C
+import sn_config as C
 # path to raw data
 data_path = C.data_path
 main_path = C.main_path

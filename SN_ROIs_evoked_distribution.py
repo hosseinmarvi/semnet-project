@@ -8,7 +8,7 @@ Created on Sat Aug 29 11:12:47 2020
 
 import numpy as np
 import mne
-import SN_config as C
+import sn_config as C
 from surfer import Brain
 
 import mne
@@ -17,7 +17,7 @@ from mne.minimum_norm import apply_inverse, read_inverse_operator
 from mne.connectivity import spectral_connectivity
 from mne.viz import circular_layout, plot_connectivity_circle
 from mne.epochs import equalize_epoch_counts
-import SN_config as C
+import sn_config as C
 from surfer import Brain
 from mne.time_frequency import tfr_morlet
 

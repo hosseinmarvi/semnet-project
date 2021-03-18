@@ -14,7 +14,7 @@ from mne.minimum_norm import apply_inverse_epochs, read_inverse_operator
 from mne.connectivity import spectral_connectivity
 from mne.viz import circular_layout, plot_connectivity_circle
 from mne.epochs import equalize_epoch_counts
-import SN_config as C
+import sn_config as C
 from surfer import Brain
 from SN_semantic_ROIs import SN_semantic_ROIs
 from SN_stc_baseline_correction import stc_baseline_correction
@@ -34,7 +34,7 @@ from SN_label_baseline_correction import label_baseline_correction
 data_path = C.data_path
 main_path = C.main_path
 subjects =  C.subjects
-MRI_sub = C.subjects_MRI
+MRI_sub = C.subjects_mri
 # Parameters
 snr = C.snr
 lambda2 = C.lambda2
@@ -136,11 +136,11 @@ for win in np.arange(0, len(C.con_time_window)):
             con_LD,freqs_LD,times_LD,n_epochs_LD,n_tapers_LD=spectral_connectivity(\
                         label_LD, method='wpli2_debiased', mode='fourier',\
                         sfreq=C.sfreq, n_jobs=6)
-                
 
-                
-            C.ImCoh_SD[i,freq,win,:,:] = con_SD.copy().mean(2)   
-            C.ImCoh_LD[i,freq,win,:,:] = con_LD.copy().mean(2) 
+
+
+            C.im_coh_sd[i, freq, win, :, :] = con_SD.copy().mean(2)
+            C.im_coh_ld[i, freq, win, :, :] = con_LD.copy().mean(2)
 
 # C.ImCoh_SD_LD= C.ImCoh_SD.copy().mean(2)- C.ImCoh_LD.copy().mean(2)
 # C.ImCoh_SD_sorted = C.ImCoh_SD.copy().mean(2)  
@@ -159,8 +159,8 @@ c=0
 for i in np.arange(0,6):
     for j in np.arange(i+1,6):
         # print(c)
-        X_SD[:,:,:,c]=C.ImCoh_SD[:,:,:,j,i]
-        X_LD[:,:,:,c]=C.ImCoh_LD[:,:,:,j,i]
+        X_SD[:,:,:,c]= C.im_coh_sd[:, :, :, j, i]
+        X_LD[:,:,:,c]= C.im_coh_ld[:, :, :, j, i]
         c=c+1
 
 # X = np.zeros([18,12,15])

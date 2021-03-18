@@ -8,7 +8,7 @@ Created on Sat Jun 20 16:33:02 2020
 
 import mne
 import numpy as np
-import SN_config as C
+import sn_config as C
 # import my_baseline_correction 
 
 from mne.stats import (spatio_temporal_cluster_1samp_test,

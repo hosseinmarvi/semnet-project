@@ -8,7 +8,7 @@ Created on Sat May  2 22:09:34 2020
 import mne
 import numpy as np
 import os.path as op
-import SN_config as C
+import sn_config as C
 from mne import compute_covariance
 
 
