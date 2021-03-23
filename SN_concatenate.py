@@ -7,7 +7,7 @@ Created on Thu May  7 11:16:31 2020
 """
 import mne
 import numpy as np
-import SN_config as C
+import sn_config as C
 
 
 

@@ -8,7 +8,7 @@ Created on Tue Apr 21 18:09:46 2020
 
 import numpy as np
 import mne
-import SN_config as C
+import sn_config as C
 
 # Freesurfer and MNE environment variables
 filename = "/imaging/local/software/mne_python/set_MNE_2.7.3_FS_6.0.0_environ.py"

@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 from mne.minimum_norm import apply_inverse_epochs, apply_inverse, read_inverse_operator
 from mne.connectivity import spectral_connectivity,seed_target_indices, phase_slope_index
 from mne.viz import circular_layout, plot_connectivity_circle
-import SN_config as C
+import sn_config as C
 from surfer import Brain
 from SN_semantic_ROIs import SN_semantic_ROIs
 from SN_stc_baseline_correction import stc_baseline_correction

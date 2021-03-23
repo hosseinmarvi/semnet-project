@@ -7,7 +7,7 @@ Created on Fri May 15 03:11:32 2020
 """
 import os
 from PIL import Image
-import SN_config as C
+import sn_config as C
 
 
 data_path = C.data_path

@@ -8,7 +8,7 @@ Created on Sat Sep 12 10:55:47 2020
 
 import mne
 import numpy as np
-import SN_config as C
+import sn_config as C
 # import my_baseline_correction 
 
 from mne.stats import (spatio_temporal_cluster_1samp_test,
@@ -25,7 +25,7 @@ import statsmodels.stats.multicomp as multi
 data_path = C.data_path
 main_path = C.main_path
 subjects =  C.subjects
-MRI_sub = C.subjects_MRI_files
+MRI_sub = C.subjects_mri_files
 # Parameters
 snr = C.snr
 lambda2 = C.lambda2

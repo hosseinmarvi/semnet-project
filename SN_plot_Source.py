@@ -8,7 +8,7 @@ Created on Tue May 19 12:34:31 2020
 
 import mne
 import numpy as np
-import SN_config as C
+import sn_config as C
 import matplotlib.pyplot as plt
 import os
 

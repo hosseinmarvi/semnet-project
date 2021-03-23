@@ -11,13 +11,13 @@ import mne
 import numpy as np
 import mne.viz 
 from mayavi import mlab
-import SN_config as C
+import sn_config as C
 
 # path to maxfiltered raw data
 data_path = C.data_path
 
 # subjects' directories
-subjects_MRI = C.subjects_MRI
+subjects_MRI = C.subjects_mri
 subjects = C.subjects
 
 print("Please enter the participant number (in the range of : [0,18] ):\n")

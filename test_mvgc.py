@@ -11,7 +11,7 @@ import mne
 import time
 import pickle
 import numpy as np
-import SN_config as C
+import sn_config as C
 from joblib import Parallel, delayed
 from SN_semantic_ROIs import SN_semantic_ROIs
 from mne.minimum_norm import apply_inverse_epochs, read_inverse_operator
@@ -22,7 +22,7 @@ from sklearn.linear_model import RidgeCV
 data_path = C.data_path
 main_path = C.main_path
 subjects = C.subjects
-MRI_sub = C.subjects_MRI
+MRI_sub = C.subjects_mri
 # Parameters
 snr = C.snr
 lambda2 = C.lambda2_epoch
@@ -57,8 +57,8 @@ def mvgc_main(cond, i, d, normalize):
 
     output_roi = mvgc_roi(epochs, inv_fname_epoch, morphed_labels, sub_to)
 
-    for roi_x in C.ROIs_lables:
-        for roi_y in C.ROIs_lables:
+    for roi_x in C.rois_labels:
+        for roi_y in C.rois_labels:
             mvgc_parallel(epochs, output_roi, roi_x, roi_y, d, i, cond,
                          normalize)
 
@@ -104,7 +104,7 @@ def mvgc_roi(epoch, inv_fname_epoch, labels, sub_to):
         X = np.zeros([len(stc), v, t])
         for s in np.arange(0, len(stc)):
             X[s, :, :] = stc[s].in_label(label).data
-        output[C.ROIs_lables[lb]] = X
+        output[C.rois_labels[lb]] = X
     return output
 
 
@@ -137,9 +137,9 @@ def mvgc_io(output_roi, roi_x, roi_y, t, d):
 
     """
     y = output_roi[roi_y][:, :, t]
-    labels = C.ROIs_lables.copy()
+    labels = C.rois_labels.copy()
     labels.remove(roi_x)
-    x_total = mvgc_x(output_roi, C.ROIs_lables, d, t)
+    x_total = mvgc_x(output_roi, C.rois_labels, d, t)
     x = mvgc_x(output_roi, labels, d, t)
     return y, x_total, x
 

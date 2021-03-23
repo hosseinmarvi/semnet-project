@@ -10,7 +10,7 @@ Created on Sun May  3 17:48:40 2020
 import mne
 import numpy as np
 import os
-import SN_config as C
+import sn_config as C
 from mne.preprocessing import find_bad_channels_maxwell
 from mne.preprocessing import maxwell_filter
 
@@ -19,7 +19,7 @@ from mne.preprocessing import maxwell_filter
 data_path = C.data_path
 
 # Path to a FIF file containing a MEG device head transformation
-CBU_path = C.CBU_path
+CBU_path = C.cbu_path
 
 # Path to the FIF file with cross-talk correction information.
 cross_talk = C.cross_talk

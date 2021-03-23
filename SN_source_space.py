@@ -9,13 +9,13 @@ Created on Fri May  1 21:46:16 2020
 
 import mne
 import numpy as np
-import SN_config as C
+import sn_config as C
 
 
 # path to data
 data_path = C.data_path
 
-subjects =  C.subjects_MRI
+subjects =  C.subjects_mri
 src_spacing = C.src_spacing
 for i in np.arange(0, len(subjects)):
     print('Participant : ' , i)

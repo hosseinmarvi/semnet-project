@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 from mne.minimum_norm import apply_inverse_epochs, apply_inverse, read_inverse_operator
 from mne.connectivity import spectral_connectivity,seed_target_indices, phase_slope_index
 from mne.viz import circular_layout, plot_connectivity_circle
-import SN_config as C
+import sn_config as C
 from surfer import Brain
 from SN_semantic_ROIs import SN_semantic_ROIs
 from SN_stc_baseline_correction import stc_baseline_correction
@@ -31,7 +31,7 @@ import sys
 data_path = C.data_path
 main_path = C.main_path
 subjects =  C.subjects
-MRI_sub = C.subjects_MRI
+MRI_sub = C.subjects_mri
 # Parameters
 snr = C.snr_epoch
 lambda2 = C.lambda2_epoch
@@ -147,7 +147,7 @@ for n in np.arange(0,len(stc_m)):
 #       stc_LD.append(stc_ld[n].copy().crop(t_min*1e-3,t_max*1e-3))
 
   
-morphed_labels[0].name = C.ROIs_lables[0] 
+morphed_labels[0].name = C.rois_labels[0]
 
 seed_ts_sd = mne.extract_label_time_course(stc_SD, morphed_labels[0], \
            src_SD, mode='mean_flip',return_generator=False)

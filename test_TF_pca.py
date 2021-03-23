@@ -22,7 +22,7 @@ import mne
 import pickle
 import os
 import numpy as np
-import SN_config as C
+import sn_config as C
 from scipy import stats as stats
 from matplotlib import pyplot as plt
 from SN_semantic_ROIs import SN_semantic_ROIs
@@ -39,7 +39,7 @@ start=time.time()
 data_path = C.data_path
 main_path = C.main_path
 subjects =  C.subjects
-MRI_sub = C.subjects_MRI_files
+MRI_sub = C.subjects_mri_files
 # Parameters
 snr = C.snr
 lambda2 = C.lambda2
@@ -240,7 +240,7 @@ tail=0
 ##############################################################################
 ### t-test and cluster-based correction for each ROI
 tail=0
-lb=C.ROIs_lables
+lb=C.rois_labels
 # difference of SD (0:6) and LD(6:12) for aech ROI and individual
 Z= X[:,0:6,:,a:-b]-X[:,6:12,:,a:-b]
 

@@ -12,7 +12,7 @@ import sys
 import time
 import pickle
 import numpy as np
-import SN_config as C
+import sn_config as C
 import matplotlib.pyplot as plt
 from numpy.linalg import inv
 from sklearn import linear_model
@@ -34,7 +34,7 @@ from matplotlib.colors import LinearSegmentedColormap
 data_path = C.data_path
 main_path = C.main_path
 subjects = C.subjects
-MRI_sub = C.subjects_MRI
+MRI_sub = C.subjects_mri
 # Parameters
 snr = C.snr
 lambda2 = C.lambda2_epoch
@@ -48,8 +48,8 @@ d = 5
 X_SD = np.zeros([len(C.subjects), 6, 6, 105])
 X_LD = np.zeros([len(C.subjects), 6, 6, 105])
 
-for y, roi_y in enumerate(C.ROIs_lables):
-    for x, roi_x in enumerate(C.ROIs_lables):
+for y, roi_y in enumerate(C.rois_labels):
+    for x, roi_x in enumerate(C.rois_labels):
         if roi_y != roi_x:
             for i in np.arange(0, len(C.subjects)):
                 print(y, x, i)

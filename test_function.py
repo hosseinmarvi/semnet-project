@@ -5,7 +5,7 @@ Created on Tue Oct 20 20:09:37 2020
 
 @author: sr05
 """
-import SN_config as C
+import sn_config as C
 import numpy as np
 import os
 import pickle

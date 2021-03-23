@@ -12,7 +12,7 @@ import mne
 # import os
 import numpy as np
 from mne import make_forward_solution
-import SN_config as C
+import sn_config as C
 
 
 # path to raw data

@@ -22,7 +22,7 @@ import mne
 import pickle
 import os
 import numpy as np
-import SN_config as C
+import sn_config as C
 from scipy import stats as stats
 from matplotlib import pyplot as plt
 from SN_semantic_ROIs import SN_semantic_ROIs
@@ -37,7 +37,7 @@ start=time.time()
 data_path = C.data_path
 main_path = C.main_path
 subjects =  C.subjects
-MRI_sub = C.subjects_MRI_files
+MRI_sub = C.subjects_mri_files
 # Parameters
 snr = C.snr
 lambda2 = C.lambda2
@@ -117,7 +117,7 @@ for m in np.arange(2,3):
     plt.imshow( X[:,m,:,a:-b].copy().mean(0),
                     extent=[times[1], times[-1], freq[0], freq[-1]],
                     aspect='auto', origin='lower', cmap='RdBu_r') 
-    plt.title('Power of '+C.ROIs_lables[m])
+    plt.title('Power of ' + C.rois_labels[m])
     plt.colorbar()
     plt.ylabel('SD (HZ)')
     plt.subplot(3,1,2)

@@ -10,7 +10,7 @@ Created on Sat May  2 23:15:23 2020
 import numpy as np
 import mne
 from mne.minimum_norm import ( make_inverse_operator, write_inverse_operator)
-import SN_config as C
+import sn_config as C
 
 # path to raw data 
 data_path = C.data_path

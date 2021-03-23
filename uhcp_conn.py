@@ -15,7 +15,7 @@ from mne.minimum_norm import apply_inverse_epochs, read_inverse_operator
 from mne.connectivity import spectral_connectivity
 from mne.viz import circular_layout, plot_connectivity_circle
 from mne.epochs import equalize_epoch_counts
-import SN_config as C
+import sn_config as C
 from surfer import Brain
 # path to raw data
 data_path = C.data_path
@@ -105,11 +105,11 @@ for win in np.arange(0, len(C.con_time_window)):
             con_LD,freqs_LD,times_LD,n_epochs_LD,n_tapers_LD=spectral_connectivity(\
                         label_ts_LD,method='imcoh', mode='fourier',sfreq=C.sfreq,\
                         fmin=fmin,fmax=fmax,n_jobs=1)
-                
-            C.ImCoh_SD[win,freq,i,:,:] = con_SD.copy().mean(2)   
-            C.ImCoh_LD[win,freq,i,:,:] = con_LD.copy().mean(2) 
-            
-        C.ImCoh_SD_LD[win,freq,:,:]= C.ImCoh_SD[win,freq,:,:,:].copy().mean(0)-C.ImCoh_LD[win,\
+
+            C.im_coh_sd[win, freq, i, :, :] = con_SD.copy().mean(2)
+            C.im_coh_ld[win, freq, i, :, :] = con_LD.copy().mean(2)
+
+        C.im_coh_sd_ld[win, freq, :, :]= C.im_coh_sd[win, freq, :, :, :].copy().mean(0) - C.im_coh_ld[win,\
                       freq,:,:,:].copy().mean(0)
             
 brain = Brain('fsaverage', 'lh', 'inflated', subjects_dir=C.data_path,

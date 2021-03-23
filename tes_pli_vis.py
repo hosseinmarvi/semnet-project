@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 from mne.minimum_norm import apply_inverse_epochs, apply_inverse, read_inverse_operator
 from mne.connectivity import spectral_connectivity,seed_target_indices, phase_slope_index
 from mne.viz import circular_layout, plot_connectivity_circle
-import SN_config as C
+import sn_config as C
 from surfer import Brain
 from SN_semantic_ROIs import SN_semantic_ROIs
 from SN_stc_baseline_correction import stc_baseline_correction
@@ -32,7 +32,7 @@ start=time.time()
 data_path = C.data_path
 main_path = C.main_path
 subjects =  C.subjects
-MRI_sub = C.subjects_MRI
+MRI_sub = C.subjects_mri
 # Parameters
 snr = C.snr
 lambda2 = C.lambda2
@@ -97,7 +97,7 @@ for k in np.arange(0,1):
         vmin1=min(stc_kmin_SD[k],stc_kmin_LD[k])
         vmax=max(abs(vmax1),abs(vmin1))
         # print(vmin,vmid,vmax)
-        print('Coherence_SD : '+C.ROIs_lables[k]+'-'+w_label[w])
+        print('Coherence_SD : ' + C.rois_labels[k] + '-' + w_label[w])
         # brain = stc_T_SD.plot(surface='inflated', hemi='split',
         #           time_label='PLI_SD : '+C.ROIs_lables[k]+'-'+w_label[w],
         #           subjects_dir=C.data_path,size=([800,400]),

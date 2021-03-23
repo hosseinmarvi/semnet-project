@@ -8,7 +8,7 @@ Created on Thu Jan  7 10:27:55 2021
 
 import mne
 import numpy as np
-import SN_config as C
+import sn_config as C
 from surfer import Brain
 import matplotlib.pyplot as plt
 from SN_semantic_ROIs import SN_semantic_ROIs
@@ -22,7 +22,7 @@ from mne.minimum_norm import (make_inverse_resolution_matrix,
 data_path = C.data_path
 main_path = C.main_path
 subjects = C.subjects
-MRI_sub = C.subjects_MRI_files
+MRI_sub = C.subjects_mri_files
 subjects_dir = data_path
 # Parameters
 snr = C.snr
@@ -53,7 +53,7 @@ for i in np.arange(0,len(subjects)):  # np.arange(1, len(subjects)):
 
     for k in np.arange(0, 6):
         # print('[i,win,k]: ',i,win,k)
-        labels[k].name = C.ROIs_lables[k]
+        labels[k].name = C.rois_labels[k]
 
     fwd_fname_EMEG = data_path + meg + 'block_EMEG_fwd.fif'
     fwd = mne.read_forward_solution(fwd_fname_EMEG)

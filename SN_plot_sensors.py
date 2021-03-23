@@ -10,7 +10,7 @@ import mne
 import numpy as np
 import mne.viz 
 from mayavi import mlab
-import SN_config as C
+import sn_config as C
 
 # path to maxfiltered raw data
 data_path = C.data_path
@@ -19,7 +19,7 @@ data_path = C.data_path
 subjects_trans = C.subjects_trans
 
 subjects =  C.subjects
-subjects_MRI =  C.subjects_MRI_files
+subjects_MRI =  C.subjects_mri_files
 
 
 for i in np.arange(0, len(subjects)-18):

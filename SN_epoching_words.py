@@ -7,7 +7,7 @@ Created on Thu Jun  4 11:48:20 2020
 """
 import numpy as np
 import mne
-import SN_config as C
+import sn_config as C
 from mne.epochs import equalize_epoch_counts
 from joblib import Parallel, delayed
 import time
