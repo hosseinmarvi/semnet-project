@@ -20,7 +20,7 @@ from sklearn.neural_network import MLPRegressor
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import make_pipeline
 from sklearn.metrics import mean_squared_error, r2_score, explained_variance_score
-
+from sklearn import preprocessing
 # path to raw data
 data_path = C.data_path
 main_path = C.main_path
@@ -37,10 +37,11 @@ s = time.time()
 fs = 1000
 f_down_sampling = 20  # 100Hz, 20Hz
 t_down_sampling = fs/f_down_sampling  # 10ms, 50ms
-i = 0
-hidden_layer_sizes = 100
+i = 10
+hidden_layer_sizes = 5
 activation = 'identity'
-ROI_x, ROI_y = 0, 2
+ROI_x = 0
+ROI_y = 1
 cond = 'fruit'
 normalize = True
 meg = subjects[i]
@@ -58,9 +59,6 @@ epochs_cond = mne.read_epochs(epo_name, preload=True)
 # crop epochs
 epochs = epochs_cond['words'].copy(
 ).crop(-.200, .900).resample(f_down_sampling)
-
-# equalize trial counts to eliminate bias
-# equalize_epoch_counts([epochs_SD, epochs_LD])
 
 inv_fname_epoch = data_path + meg + 'InvOp_'+cond+'_EMEG-inv.fif'
 
@@ -91,7 +89,7 @@ GOF_ave = {}
 # initialize the correlation coefficeint array of sizr vertices X 1
 GOF_explained_variance = np.zeros([X.shape[-1], X.shape[-1]])
 for t1 in np.arange(10, 11):
-    for t2 in np.arange(10, 11):
+    for t2 in np.arange(11, 12):
         print('time: ', t1, t2)
         r = X.shape[0]
         if (r/5) > 10:
@@ -99,14 +97,14 @@ for t1 in np.arange(10, 11):
         else:
             n_splits = 5
         kf = KFold(n_splits=n_splits)
-        regrCV = RidgeCV(alphas=np.logspace(-5, 5, 100),
+        regrCV = RidgeCV(alphas=np.logspace(-4, 4, 100),
                          normalize=normalize)
         scores = cross_validate(
             regrCV, X[:, :, t2], Y[:, :, t1], scoring=(
                 'explained_variance'),
             cv=kf, n_jobs=-1)
         print('RR score: ', np.mean(scores['test_score']))
-        
+
         var_s = np.zeros([n_splits])
         for s, (train, test) in enumerate(kf.split(X, Y)):
             # print(s,train, test)
@@ -114,28 +112,37 @@ for t1 in np.arange(10, 11):
             #                     MLPRegressor(hidden_layer_sizes=hidden_layer_sizes,
             #                                  activation=activation,
             #                                  solver='lbfgs', max_iter=1000))
+            # mlp.fit(X[train, :, t2], Y[train, :, t1])
+            # y_pred = mlp.predict(X[test, :, t2])
+            # var_s[s] = explained_variance_score(Y[test, :, t1], y_pred)
+            x_train = preprocessing.StandardScaler().fit(
+                X[train, :, t2]).transform(X[train, :, t2])
+            y_train = preprocessing.StandardScaler().fit(
+                Y[train, :, t1]).transform(Y[train, :, t1])
+
+            x_test = preprocessing.StandardScaler().fit(
+                X[train, :, t2]).transform(X[test, :, t2])
+            y_test = preprocessing.StandardScaler().fit(
+                Y[train, :, t1]).transform(Y[test, :, t1])
 
             mlp = MLPRegressor(hidden_layer_sizes=hidden_layer_sizes,
-                                             activation=activation,
-                                             solver='lbfgs', max_iter=1000)
+                               activation=activation, learning_rate='adaptive',
+                               solver='lbfgs', max_iter=1000, alpha = 1e-04)
 
-
-            mlp.fit(X[train, :, t2], Y[train, :, t1])
-            y_pred = mlp.predict(X[test, :, t2])
-
-            var_s[s] = explained_variance_score(Y[test, :, t1], y_pred)
+            mlp.fit(x_train, y_train)
+            y_pred = mlp.predict(x_test)
+            var_s[s] = explained_variance_score(y_test, y_pred)
 
         print('MPL score: ', np.mean(var_s))
 
+        # mlp = make_pipeline(StandardScaler(),
+        #                     MLPRegressor(hidden_layer_sizes=hidden_layer_sizes,
+        #                                  activation=activation, solver='lbfgs',
+        #                                  max_iter=1000))
 
-        mlp = make_pipeline(StandardScaler(),
-                            MLPRegressor(hidden_layer_sizes=hidden_layer_sizes,
-                                         activation=activation, solver='lbfgs',
-                                         max_iter=1000))
+        # scores = cross_validate(
+        #     mlp, X[:, :, t2], Y[:, :, t1], scoring=('explained_variance'),
+        #     cv=kf, n_jobs=-1)
+        # score = np.mean(scores['test_score'])
 
-        scores = cross_validate(
-            mlp, X[:, :, t2], Y[:, :, t1], scoring=('explained_variance'),
-            cv=kf, n_jobs=-1)
-        score = np.mean(scores['test_score'])
-
-        print('MPL score: ', np.mean(scores['test_score']))
+        # print('MPL score: ', np.mean(scores['test_score']))
