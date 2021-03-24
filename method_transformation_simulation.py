@@ -7,113 +7,62 @@ Created on Tue Mar  9 17:26:44 2021
 """
 import time
 import numpy as np
-import numpy.matlib
 import matplotlib.pyplot as plt
 from joblib import Parallel, delayed
 from sklearn.linear_model import RidgeCV
-from sklearn.model_selection import (cross_validate, KFold)
+from sklearn.model_selection import cross_validate, KFold
+
+
+def transformation(trial, x, y, normalize):
+    n_splits = 5
+    if (trial / 5) > 10:
+        n_splits = 10
+    kf = KFold(n_splits=n_splits)
+    regr_cv = RidgeCV(alphas=np.logspace(-5, 5, 100),
+                      normalize=normalize)
+    scores = cross_validate(
+        regr_cv, x, y,
+        scoring=('explained_variance', 'neg_mean_squared_error'), cv=kf,
+        n_jobs=-1, return_train_score=True
+    )
+
+    return (np.mean(scores['test_explained_variance']),
+            np.mean(scores['test_neg_mean_squared_error']))
+
+
+def noise_transformation_plot(vertices, x_axis, y_axis, colors,
+                              x_label, y_label):
+    plt.rcParams['font.size'] = '14'
+    plt.figure(figsize=(11, 5))
+    for i in np.arange(len(vertices)):
+        plt.plot(x_axis, y_axis[i], colors[i * 2], label=str(vertices[i]))
+        plt.plot(x_axis, y_axis[i], colors[i * 2 + 1])
+    plt.legend(loc='upper right')
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+    # plt.savefig(f'/home/sr05/Method_dev/method_fig'
+    #             f'/noise_connectivity_{y_label}')
+
 
 """
 ===========================================================================
-1- Effect of K in K-fold Cross-validation on explained variance and MSE
+1. Transformation between two random noise (two independent variables)
 ===========================================================================
 """
-# R = [50]
-# C = [50]
-# repeat = 10
-# std = -.5
-# normalize = True
-
-# for r in R:
-#     for c in C:
-#         K = np.array([3, 5, 8, 10, 20, r-5, r-2, r-1])
-
-#         var_k = np.zeros([len(K), 1])
-#         mse_k = np.zeros([len(K), 1])
-#         mse_std = np.zeros([len(K), 1])
-#         noise = np.random.normal(0, 10**std, (r, c))
-#         T = np.random.normal(0, 1, (c, c))
-#         n_pow = np.zeros([repeat, 1])
-#         x_pow = np.zeros([repeat, 1])
-
-#         for j, k in enumerate(K):
-#             print(k)
-#             var = np.zeros([repeat, 1])
-#             mse = np.zeros([repeat, 1])
-#             for i in np.arange(0, repeat):
-#                 X = np.random.normal(0, 1, (r, c))
-#                 Y = np.matmul(X, T)
-#                 Y = Y+noise
-#                 n_pow[i, 0] = np.var(noise)
-#                 x_pow[i, 0] = np.var(np.matmul(X, T))
-#                 kf = KFold(n_splits=k)
-#                 regrCV = RidgeCV(alphas=np.logspace(-5, 5, 100),
-#                                  normalize=normalize)
-#                 scores = cross_validate(
-#                     regrCV, X, Y, scoring=('explained_variance',
-#                                            'neg_mean_squared_error'),
-#                     cv=kf, n_jobs=-1)
-
-#                 var[i] = np.mean(scores['test_explained_variance'])
-#                 mse[i] = np.mean(np.abs(scores['test_neg_mean_squared_error']))
-
-#             var_k[j] = np.round(np.mean(var[:, 0]), 4)
-#             mse_k[j] = np.round(np.mean(mse[:, 0]), 4)
-#             mse_std[j] = np.round(np.std(mse[:, 0]), 4)
-
-#         plt.figure()
-#         # plt.plot(np.delete(K, [-3, -2]), np.delete(var_k, [-3, -2]), 'bs')
-#         # plt.plot(np.delete(K, [-3, -2]), np.delete(var_k, [-3, -2]), 'b--')
-#         plt.plot(K, var_k, 'bs')
-#         plt.plot(K, var_k, 'b--')
-#         plt.title('X and Y dimension: [' + str(r) + ', '+str(c)+']')
-#         plt.xlabel('K')
-#         plt.ylabel('Explained Variance')
-
-#         mean = mse_k
-#         error = mse_std
-#         x_pos = K
-#         fig, ax = plt.subplots(figsize=(9, 5))
-#         for i in np.arange(0, len(K)):
-#             ax.bar(x_pos[i], mean[i],
-#                    yerr=error[i],
-#                    align='center',
-#                    alpha=0.4,
-#                    ecolor='black',
-#                    capsize=10,
-#                    width=0.4)
-#         ax.set_ylabel('MSE')
-#         ax.set_xlabel('K')
-#         ax.set_xticks(K)
-#         ax.plot(K, mean, 'g--')
-#         ax.set_title('X and Y dimension: [' + str(r) + ', '+str(c)+']')
-#         plt.tight_layout()
-#         plt.show()
-# # plt.close('all')
-"""
-===========================================================================
-2- Transformation between two random noise (two independant variables)
-===========================================================================
-"""
-repeat = 100
-normalize = True
-# number of trials
-R = [30, 50, 100, 200, 500, 1000]
-# number of vertices
-C = [50, 100, 150]
-my_color = ['ro', 'r--', 'bs', 'b--', 'gx', 'g--']
 
 
-def noise_connectivity(c, r, repeat):
+def noise_connectivity(trial, vertex, repeat, normalize):
     """
     this function computes the connectivity between 2 random noises using
     Ridge Regression and k-fold cross-validation.
 
     Parameters
     ----------
-    c : int
+    normalize : bool
+        
+    vertex : int
         column-number of vertices
-    r : int
+    trial : int
         row-number of trials
     repeat : int
 
@@ -123,93 +72,60 @@ def noise_connectivity(c, r, repeat):
 
     """
     mse = np.zeros([repeat])
-    var = np.zeros([repeat])
+    explained_var = np.zeros([repeat])
 
-    for i in np.arange(0, repeat):
-        print('r, c , i: ', r, ', ', c, ', ', i)
-        X = np.random.normal(0, 1, (r, c))
-        Y = np.random.normal(0, 1, (r, c))
+    for i in np.arange(repeat):
+        print(f'trial, vertex, i: {trial}, {vertex}, {i}')
+        x = np.random.normal(0, 1, (trial, vertex))
+        y = np.random.normal(0, 1, (trial, vertex))
+        explained_var[i], mse[i] = transformation(trial, x, y, normalize)
 
-        if (r/5) > 10:
-            n_splits = 10
-        else:
-            n_splits = 5
-
-        kf = KFold(n_splits=n_splits)
-        regrCV = RidgeCV(alphas=np.logspace(-5, 5, 100),
-                         normalize=normalize)
-        scores = cross_validate(
-            regrCV, X, Y, scoring=('explained_variance',
-                                   'neg_mean_squared_error'),
-            cv=kf, n_jobs=-1, return_train_score=True)
-
-        var[i] = np.mean(scores['test_explained_variance'])
-        mse[i] = np.mean(scores['test_neg_mean_squared_error'])
-
-    return {'MSE': np.mean(mse), 'var': np.mean(var)}
+    return {'MSE': np.mean(mse), 'explained_var': np.mean(explained_var)}
 
 
-s = time.time()
-GOF_ave = Parallel(n_jobs=-1)(delayed(noise_connectivity)
-                              (c, r, repeat)for c in C for r in R)
-e = time.time()
-print(e-s)
+def noise_connectivity_main(trials, vertices, repeat, normalize):
+    # number of vertices
+    noise_colors = ['ro', 'r--', 'bs', 'b--', 'gx', 'g--']
+    start = time.time()
+    gof = Parallel(n_jobs=-1)(delayed(noise_connectivity)
+                              (t, v, repeat, normalize)
+                              for v in vertices for t in trials)
+    end = time.time()
+    print(end - start)
+    # extracts metrics from GOF_ave for different vertices (C) and trials(R)
+    mse = np.zeros([len(vertices), len(trials)])
+    explained_var = np.zeros([len(vertices), len(trials)])
+    for i in range(len(vertices)):
+        for j in range(len(trials)):
+            mse[i, j] = np.abs(gof[i * len(trials) + j]['MSE'])
+            explained_var[i, j] = gof[i * len(trials) + j]['explained_var']
 
-# extracts metrics from GOF_ave for different vertices (C) and trials(R)
-mse = np.zeros([len(C), len(R)])
-var = np.zeros([len(C), len(R)])
-for i in range(len(C)):
-    for j in range(len(R)):
-        mse[i, j] = np.abs(GOF_ave[i*len(R)+j]['MSE'])
-        var[i, j] = GOF_ave[i*len(R)+j]['var']
+    noise_transformation_plot(vertices, trials, mse, noise_colors,
+                              'Number of Trials', 'MSE')
+    noise_transformation_plot(vertices, trials, explained_var, noise_colors,
+                              'Number of Trials', 'Explained Variance')
 
-plt.rcParams['font.size'] = '14'
-plt.figure(figsize=(11, 5))
-for i in np.arange(0, len(C)):
-    plt.plot(R, mse[i], my_color[i*2], label=str(C[i]))
-    plt.plot(R, mse[i], my_color[i*2+1])
-plt.legend(loc='upper right')
-plt.xlabel('Number of Trials')
-plt.ylabel('MSE')
-# plt.savefig('/home/sr05/Method_dev/method_fig/simulation_noise_connectivity_MSE2')
-
-
-plt.figure(figsize=(11, 5))
-for i in np.arange(0, len(C)):
-    plt.plot(R, var[i], my_color[i*2], label=str(C[i]))
-    plt.plot(R, var[i], my_color[i*2+1])
-plt.legend(loc='upper right')
-plt.xlabel('Number of Trials')
-plt.ylabel('Explained Variance')
-# plt.savefig('/home/sr05/Method_dev/method_fig/simulation_noise_connectivity_var2')
 
 """
 ===========================================================================
-3- Linear Transformation between two variables
+2. Linear Transformation between two variables
 ===========================================================================
 """
-repeat = 100
-c = 150  # 50, 100, 150
-R = [30, 50, 100, 150, 300, 500, 1000]
-std_pow = [2.5, 2, 1.5, 1, .5, 0, -.5, -1, -1.5, -2]
-n_pow = np.zeros([repeat, 1])
-x_pow = np.zeros([repeat, 1])
-my_colors = ['bo', 'b--', 'yo', 'y--', 'go', 'g--',
-             'm*', 'm--', 'bs', 'b--', 'rs', 'r--', 'gs', 'g--']
-normalize = True
 
 
-def SNR_trials_connectivity(repeat, r, c, std):
+def snr_trials_connectivity(trial, vertex, repeat, normalize, std):
     """
     this function computes the connectivity between 2 linearly-related matrices
     using Ridge Regression and k-fold cross-validation.
 
     Parameters
     ----------
+    normalize : bool
+        
     repeat : int
-    r : int
+    trial : int
         row-number of trials
-    c : int
+    vertex : int
         column-number of vertices
     std : float
 
@@ -220,84 +136,89 @@ def SNR_trials_connectivity(repeat, r, c, std):
 
     """
     mse = np.zeros([repeat, 1])
-    var = np.zeros([repeat, 1])
+    explained_var = np.zeros([repeat, 1])
+    noise_var = np.zeros([repeat, 1])
+    signal_var = np.zeros([repeat, 1])
+    noise = np.random.normal(0, 10 ** std, (trial, vertex))
+    coef_matrix = np.random.normal(0, 1, (vertex, vertex))
+    for i in np.arange(repeat):
+        print(f'trial, vertex, i: {trial}, {vertex}, {i}')
+        x = np.random.normal(0, 1, (trial, vertex))
+        y = np.matmul(x, coef_matrix)
+        y = y+noise
+        noise_var[i, 0] = np.var(noise)
+        signal_var[i, 0] = np.var(np.matmul(x, coef_matrix))
+        explained_var[i], mse[i] = transformation(trial, x, y, normalize)
 
-    noise = np.random.normal(0, 10**std, (r, c))
-    T = np.random.normal(0, 1, (c, c))
-    for i in np.arange(0, repeat):
-        # print ('r, c , i: ',r,', ', c,', ',i)
-        X = np.random.normal(0, 1, (r, c))
-        Y = np.matmul(X, T)
-        Y = Y+noise
-        n_pow[i, 0] = np.var(noise)
-        x_pow[i, 0] = np.var(np.matmul(X, T))
-
-        if (r/5) > 10:
-            n_splits = 10
-        else:
-            n_splits = 5
-
-        kf = KFold(n_splits=n_splits)
-        regrCV = RidgeCV(alphas=np.logspace(-5, 5, 100),
-                         normalize=normalize)
-        scores = cross_validate(
-            regrCV, X, Y, scoring=('explained_variance',
-                                   'neg_mean_squared_error'),
-            cv=kf, n_jobs=-1, return_train_score=True)
-
-        var[i] = np.mean(scores['test_explained_variance'])
-        mse[i] = np.mean(scores['test_neg_mean_squared_error'])
-
-    sig = x_pow.copy().mean(0)
-    n = n_pow.copy().mean(0)
-    snr = sig/n
+    signal_var_avg = signal_var.copy().mean(0)
+    noise_var_avg = noise_var.copy().mean(0)
+    snr = signal_var_avg/noise_var_avg
     mse_snr = np.round(np.mean(mse[:, 0]), 4)
-    var_snr = np.round(np.mean(var[:, 0]), 4)
+    var_snr = np.round(np.mean(explained_var[:, 0]), 4)
 
-    return {'MSE': mse_snr, 'var': var_snr, 'sig_pow': sig, 'n_pow': n,
-            'snr': snr}
-
-
-s = time.time()
-GOF_ave = Parallel(n_jobs=-1)(delayed(SNR_trials_connectivity)(repeat, r, c,
-                                                               std)
-                              for r in R
-                              for std in std_pow)
-e = time.time()
-print(e-s)
+    return {'MSE': mse_snr, 'explained_var': var_snr,
+            'sig_pow': signal_var_avg, 'noise_var': noise_var_avg, 'SNR': snr}
 
 
-mse = np.zeros([len(R), len(std_pow)])
-var = np.zeros([len(R), len(std_pow)])
-snr = np.zeros([len(R), len(std_pow)])
-# extracts metrics from GOF_ave for different vertices (C) and trials(R)
-for i in range(len(R)):
-    for j in range(len(std_pow)):
-        mse[i, j] = np.abs(GOF_ave[i*len(std_pow)+j]['MSE'])
-        var[i, j] = GOF_ave[i*len(std_pow)+j]['var']
-        snr[i, j] = GOF_ave[i*len(std_pow)+j]['snr']
+def snr_trials_connectivity_main(trials, vertices, repeat, normalize):
+    std_pow = [2.5, 2, 1.5, 1, .5, 0, -.5, -1, -1.5, -2]
+    connectivity_colors = ['bo', 'b--', 'yo', 'y--', 'go', 'g--',
+                           'm*', 'm--', 'bs', 'b--', 'rs', 'r--', 'gs', 'g--']
+    start = time.time()
+    gof = Parallel(n_jobs=-1)(
+        delayed(snr_trials_connectivity)(t, vertex, repeat, normalize, std)
+        for t in trials
+        for vertex in vertices
+        for std in std_pow)
+    end = time.time()
+    print(end - start)
 
-SNR = 10*np.log10(np.mean(snr, 0))
+    mse = np.zeros([len(trials), len(vertices), len(std_pow)])
+    explained_var = np.zeros([len(trials), len(vertices), len(std_pow)])
+    snr = np.zeros([len(trials), len(vertices), len(std_pow)])
+    # extracts metrics from gof for different vertices and trials
+    for i in range(len(trials)):
+        for v in range(len(vertices)):
+            for j in range(len(std_pow)):
+                mse[i, v, j] = np.abs(gof[i * len(std_pow) + j]['MSE'])
+                explained_var[i, v, j] = \
+                    gof[i * len(std_pow) + j]['explained_var']
+                snr[i, v, j] = gof[i * len(std_pow) + j]['SNR']
 
-plt.rcParams['font.size'] = '14'
-plt.figure(figsize=(10, 5))
-for i in np.arange(0, len(R)):
-    plt.plot(SNR, mse[i, :], my_colors[i*2], label=str(R[i]))
-    plt.plot(SNR, mse[i, :], my_colors[i*2+1])
-    plt.legend(loc='upper right')
-plt.xlabel('SNR(db)')
-plt.ylabel('MSE')
-plt.title('Number of vertices: '+str(c))
-# plt.savefig('/home/sr05/Method_dev/method_fig/simulation_SNR_trials_effect_MSE_'+str(c))
+    snr = 10 * np.log10(np.mean(snr, 0))
+    connectivity_transformation_plot(trials, vertices, snr, mse,
+                                     connectivity_colors, 'SNR(db)', 'MSE')
+    connectivity_transformation_plot(trials, vertices, snr, explained_var,
+                                     connectivity_colors, 'SNR(db)',
+                                     'Explained Variance')
 
 
-plt.figure(figsize=(10, 5))
-for i in np.arange(0, len(R)):
-    plt.plot(SNR, var[i, :], my_colors[i*2], label=str(R[i]))
-    plt.plot(SNR, var[i, :], my_colors[i*2+1])
-    plt.legend(loc='upper left')
-plt.xlabel('SNR(db)')
-plt.ylabel('Explained Variance')
-plt.title('Number of vertices: '+str(c))
+def connectivity_transformation_plot(trials, vertices, x_axis, y_axis, colors,
+                                     x_label, y_label):
 
-# plt.savefig('/home/sr05/Method_dev/method_fig/simulation_SNR_trials_effect_var_'+str(c))
+    for i in np.arange(len(vertices)):
+        plt.rcParams['font.size'] = '14'
+        plt.figure(figsize=(11, 5))
+        for j in np.arange(len(trials)):
+            plt.plot(x_axis[j, i], y_axis[j, i], colors[i * 2],
+                     label=str(trials[i]))
+            plt.plot(x_axis[j, i], y_axis[j, i], colors[i * 2 + 1])
+        plt.legend(loc='upper right')
+        plt.xlabel(x_label)
+        plt.ylabel(y_label)
+        plt.title(f'Transformation: Vertex({vertices[i]})')
+        # plt.savefig(f'/home/sr05/Method_dev/method_fig'
+        #             f'/linear_connectivity_{y_label}_v{vertices[i]}')
+
+
+if __name__ == '__main__':
+    n_repeats = 5
+    # trials_list = [30, 50, 100, 150, 300, 500, 1000]
+    trials_list = [30, 50]
+    # vertices_list = [50, 100, 150]
+    vertices_list = [50, 150]
+    normalization = True
+    snr_trials_connectivity_main(trials_list, vertices_list, n_repeats,
+                                 normalization)
+    noise_connectivity_main(trials_list, vertices_list, n_repeats,
+                            normalization)
