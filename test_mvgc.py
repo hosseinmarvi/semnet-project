@@ -32,7 +32,7 @@ SN_ROI = SN_semantic_ROIs()
 # ROI_y=0
 s = time.time()
 fs = 1000
-f_down_sampling = 100  # 100Hz, 20Hz
+f_down_sampling = 20  # 100Hz, 20Hz
 t_down_sampling = fs/f_down_sampling  # 10ms, 50ms
 
 

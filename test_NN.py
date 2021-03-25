@@ -125,13 +125,12 @@ print(score)
 # plt.close('all')
 
 
-# from keras.models import Sequential
-# from keras.layers import Dense
-# model = Sequential()
-# input_size = len(X[0])
-# model.add(Dense(200, activation="relu", input_dim=input_size))
-# model.add(Dense(200, activation="relu"))
-# model.add(Dense(1, activation="linear"))
-# model.compile(optimizer="adam", loss="mse")
-# model.fit(X_train, y_train, epochs=25, verbose=1)
-# y_pred = model.predict(X_test)
+from keras.models import Sequential
+from keras.layers import Dense
+model = Sequential()
+input_size = x_train.shape[0]
+model.add(Dense(100, activation="tanh", input_dim=input_size))
+model.add(Dense(input_size , activation="linear"))
+model.compile(optimizer="adam", loss="mse")
+model.fit(x_train, y_train, epochs=25, verbose=1)
+y_pred = model.predict(x_test)

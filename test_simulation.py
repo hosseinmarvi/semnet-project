@@ -936,176 +936,176 @@ diabetes_XX, diabetes_y = datasets.load_diabetes(return_X_y=True)
 
 ############################################################
 # ### SNR and trials Effect on model performance
-# c = 50
-# # R = [40]
-# R = [40, 50, 100, 150, 300, 500, 1000]
+c = 50
+# R = [40]
+R = [40, 50, 100, 150, 300, 500, 1000]
 
-# # number of iteration
-# repeat = 100
+# number of iteration
+repeat = 100
 
-# # choose the coefficient matrix
-# std_pow = [2.5, 2, 1.5, 1, .5, 0, -.5, -1, -1.5, -2]
-# # std_pow=[0,-.5,-1,-1.5,-2]
+# choose the coefficient matrix
+std_pow = [2.5, 2, 1.5, 1, .5, 0, -.5, -1, -1.5, -2]
+# std_pow=[0,-.5,-1,-1.5,-2]
 
-# # snr=np.arange(-40,50,10)
-# # snr=np.arange(0,50,10)
+# snr=np.arange(-40,50,10)
+# snr=np.arange(0,50,10)
 
-# # SNR=snr.copy().transpose()
-# # MSE_snr= np.zeros([len(std_pow),len(R)])
-# # corr_snr= np.zeros([len(std_pow),len(R)])
-# # r2_snr= np.zeros([len(std_pow),len(R)])
-# # var_snr= np.zeros([len(std_pow),len(R)])
-# # r_error_snr= np.zeros([len(std_pow),len(R)])
-# n_pow = np.zeros([repeat, 1])
-# x_pow = np.zeros([repeat, 1])
-# normalize = True
-
-
-# def SNR_trials_connectivity(repeat, r, c, std):
-#     MSE = np.zeros([repeat, 1])
-#     var = np.zeros([repeat, 1])
-#     r2 = np.zeros([repeat, 1])
-#     corr = np.zeros([repeat, 1])
-#     r_error = np.zeros([repeat, 1])
-
-#     noise = np.random.normal(0, 10**std, (r, c))
-#     T = np.random.normal(0, 1, (c, c))
-
-#     for i in np.arange(0, repeat):
-#         # print ('r, c , i: ',r,', ', c,', ',i)
-#         X = np.random.normal(0, 1, (r, c))
-#         Y = np.matmul(X, T)
-#         Y = Y+noise
-#         n_pow[i, 0] = np.var(noise)
-#         x_pow[i, 0] = np.var(np.matmul(X, T))
-
-#         if r >= c:
-#             if (r/5) < 10:
-#                 n_splits = math.floor(r/5)
-#             else:
-#                 n_splits = 10
-#         else:
-#             n_splits = np.max([math.floor(r/5)-1, 2])
-
-#         MSE_s = np.zeros([n_splits])
-#         var_s = np.zeros([n_splits])
-#         r2_s = np.zeros([n_splits])
-#         r_error_s = np.zeros([n_splits])
-#         corr_s = np.zeros([n_splits])
-
-#         kf = KFold(n_splits=n_splits)
-#         for s, (train, test) in enumerate(kf.split(X, Y)):
-#             # print(s,train, test)
-#             regrCV = RidgeCV(alphas=np.logspace(-10, 10, 100),
-#                              normalize=normalize)
-#             regrCV.fit(X[train, :], Y[train, :])
-#             y_pred_CV = regrCV.predict(X[test, :])
-
-#             MSE_s[s] = mean_squared_error(Y[test, :], y_pred_CV)
-#             r2_s[s] = r2_score(Y[test, :], y_pred_CV)
-#             var_s[s] = explained_variance_score(Y[test, :], y_pred_CV)
-#             corr_s[s] = np.corrcoef(Y[test, :], y_pred_CV)[0, 1]
-#             r_error_s[s] = np.mean(np.abs((Y[test, :] - y_pred_CV)/Y[test, :]))
-
-#         MSE[i] = np.mean(MSE_s)
-#         r2[i] = np.mean(r2_s)
-#         var[i] = np.mean(var_s)
-#         corr[i] = np.mean(corr_s)
-#         r_error[i] = np.mean(r_error_s)
-
-#     sig = x_pow.copy().mean(0)
-#     n = n_pow.copy().mean(0)
-#     snr = sig/n
-#     # averaging across iteration
-#     # T_RR_t[j]=  T_RR/repeat
-#     MSE_snr = np.round(np.mean(MSE[:, 0]), 4)
-#     corr_snr = np.round(np.mean(corr[:, 0]), 4)
-#     r2_snr = np.round(np.mean(r2[:, 0]), 4)
-#     var_snr = np.round(np.mean(var[:, 0]), 4)
-#     r_error_snr = np.round(np.mean(r_error[:, 0]), 4)
-#     return {'MSE': MSE_snr, 'r2': r2_snr, 'var': var_snr, 'corr': corr_snr,
-#             'r_error': r_error_snr, 'sig_pow': sig, 'n_pow': n, 'snr': snr}
+# SNR=snr.copy().transpose()
+# MSE_snr= np.zeros([len(std_pow),len(R)])
+# corr_snr= np.zeros([len(std_pow),len(R)])
+# r2_snr= np.zeros([len(std_pow),len(R)])
+# var_snr= np.zeros([len(std_pow),len(R)])
+# r_error_snr= np.zeros([len(std_pow),len(R)])
+n_pow = np.zeros([repeat, 1])
+x_pow = np.zeros([repeat, 1])
+normalize = True
 
 
-# s = time.time()
-# GOF_ave = Parallel(n_jobs=-1)(delayed(SNR_trials_connectivity)(repeat, r, c, std)
-#                               for r in R
-#                               for std in std_pow)
-# e = time.time()
-# print(e-s)
+def SNR_trials_connectivity(repeat, r, c, std):
+    MSE = np.zeros([repeat, 1])
+    var = np.zeros([repeat, 1])
+    r2 = np.zeros([repeat, 1])
+    corr = np.zeros([repeat, 1])
+    r_error = np.zeros([repeat, 1])
+
+    noise = np.random.normal(0, 10**std, (r, c))
+    T = np.random.normal(0, 1, (c, c))
+
+    for i in np.arange(0, repeat):
+        # print ('r, c , i: ',r,', ', c,', ',i)
+        X = np.random.normal(0, 1, (r, c))
+        Y = np.matmul(X, T)
+        Y = Y+noise
+        n_pow[i, 0] = np.var(noise)
+        x_pow[i, 0] = np.var(np.matmul(X, T))
+
+        if r >= c:
+            if (r/5) < 10:
+                n_splits = math.floor(r/5)
+            else:
+                n_splits = 10
+        else:
+            n_splits = np.max([math.floor(r/5)-1, 2])
+
+        MSE_s = np.zeros([n_splits])
+        var_s = np.zeros([n_splits])
+        r2_s = np.zeros([n_splits])
+        r_error_s = np.zeros([n_splits])
+        corr_s = np.zeros([n_splits])
+
+        kf = KFold(n_splits=n_splits)
+        for s, (train, test) in enumerate(kf.split(X, Y)):
+            # print(s,train, test)
+            regrCV = RidgeCV(alphas=np.logspace(-10, 10, 100),
+                              normalize=normalize)
+            regrCV.fit(X[train, :], Y[train, :])
+            y_pred_CV = regrCV.predict(X[test, :])
+
+            MSE_s[s] = mean_squared_error(Y[test, :], y_pred_CV)
+            r2_s[s] = r2_score(Y[test, :], y_pred_CV)
+            var_s[s] = explained_variance_score(Y[test, :], y_pred_CV)
+            corr_s[s] = np.corrcoef(Y[test, :], y_pred_CV)[0, 1]
+            r_error_s[s] = np.mean(np.abs((Y[test, :] - y_pred_CV)/Y[test, :]))
+
+        MSE[i] = np.mean(MSE_s)
+        r2[i] = np.mean(r2_s)
+        var[i] = np.mean(var_s)
+        corr[i] = np.mean(corr_s)
+        r_error[i] = np.mean(r_error_s)
+
+    sig = x_pow.copy().mean(0)
+    n = n_pow.copy().mean(0)
+    snr = sig/n
+    # averaging across iteration
+    # T_RR_t[j]=  T_RR/repeat
+    MSE_snr = np.round(np.mean(MSE[:, 0]), 4)
+    corr_snr = np.round(np.mean(corr[:, 0]), 4)
+    r2_snr = np.round(np.mean(r2[:, 0]), 4)
+    var_snr = np.round(np.mean(var[:, 0]), 4)
+    r_error_snr = np.round(np.mean(r_error[:, 0]), 4)
+    return {'MSE': MSE_snr, 'r2': r2_snr, 'var': var_snr, 'corr': corr_snr,
+            'r_error': r_error_snr, 'sig_pow': sig, 'n_pow': n, 'snr': snr}
 
 
-# MSE = np.zeros([len(R), len(std_pow)])
-# r2 = np.zeros([len(R), len(std_pow)])
-# var = np.zeros([len(R), len(std_pow)])
-# corr = np.zeros([len(R), len(std_pow)])
-# r_error = np.zeros([len(R), len(std_pow)])
-# snr = np.zeros([len(R), len(std_pow)])
-# for i in range(len(R)):
-#     for j in range(len(std_pow)):
-#         MSE[i, j] = GOF_ave[i*len(std_pow)+j]['MSE']
-#         r2[i, j] = GOF_ave[i*len(std_pow)+j]['r2']
-#         var[i, j] = GOF_ave[i*len(std_pow)+j]['var']
-#         corr[i, j] = GOF_ave[i*len(std_pow)+j]['corr']
-#         r_error[i, j] = GOF_ave[i*len(std_pow)+j]['r_error']
-#         snr[i, j] = GOF_ave[i*len(std_pow)+j]['snr']
-
-# SNR = 10*np.log10(np.mean(snr, 0))
-# plt.rcParams['font.size'] = '12'
-# my_colors = ['bo', 'b--', 'y*', 'y--', 'go', 'g--',
-#              'ms', 'm--', 'bs', 'b--', 'rs', 'r--', 'gs', 'g--']
-# my_labels = ['40', '50', '100', '150', '300', '500', '1000']
-
-# # p = 0
-# # plt.figure(figsize=(8, 4))
-# # for i in np.arange(0, len(R)):
-# #     plt.title('MSE')
-# #     plt.plot(SNR, MSE[p, :], my_colors[i+p], label=my_labels[i])
-# #     plt.plot(SNR, MSE[p, :], my_colors[i+1+p])
-# #     p += 1
-# #     plt.legend(loc='upper right')
-
-# # plt.xlabel('SNR(db)')
-# # plt.savefig('/home/sr05/Method_dev/method_fig/simulation_SNR_trials_effect_MSE')
-
-# # p = 0
-# # plt.figure(figsize=(8, 4))
-# # for i in np.arange(0, len(R)):
-# #     plt.title('Relative Error')
-# #     plt.plot(SNR, r_error[p, :], my_colors[i+p], label=my_labels[i])
-# #     plt.plot(SNR, r_error[p, :], my_colors[i+1+p])
-# #     p += 1
-# #     plt.legend(loc='upper right')
-
-# # plt.xlabel('SNR(db)')
-# # plt.savefig('/home/sr05/Method_dev/method_fig/simulation_SNR_trials_effect_re')
+s = time.time()
+GOF_ave = Parallel(n_jobs=-1)(delayed(SNR_trials_connectivity)(repeat, r, c, std)
+                              for r in R
+                              for std in std_pow)
+e = time.time()
+print(e-s)
 
 
-# # p = 0
-# # plt.figure(figsize=(8, 4))
-# # for i in np.arange(0, len(R)):
-# #     plt.title('R2 score')
-# #     plt.plot(SNR, r2[p, :], my_colors[i+p], label=my_labels[i])
-# #     plt.plot(SNR, r2[p, :], my_colors[i+1+p])
-# #     p += 1
-# #     plt.legend(loc='upper right')
+MSE = np.zeros([len(R), len(std_pow)])
+r2 = np.zeros([len(R), len(std_pow)])
+var = np.zeros([len(R), len(std_pow)])
+corr = np.zeros([len(R), len(std_pow)])
+r_error = np.zeros([len(R), len(std_pow)])
+snr = np.zeros([len(R), len(std_pow)])
+for i in range(len(R)):
+    for j in range(len(std_pow)):
+        MSE[i, j] = GOF_ave[i*len(std_pow)+j]['MSE']
+        r2[i, j] = GOF_ave[i*len(std_pow)+j]['r2']
+        var[i, j] = GOF_ave[i*len(std_pow)+j]['var']
+        corr[i, j] = GOF_ave[i*len(std_pow)+j]['corr']
+        r_error[i, j] = GOF_ave[i*len(std_pow)+j]['r_error']
+        snr[i, j] = GOF_ave[i*len(std_pow)+j]['snr']
 
-# # plt.xlabel('SNR(db)')
-# # plt.savefig('/home/sr05/Method_dev/method_fig/simulation_SNR_trials_effect_r2')
+SNR = 10*np.log10(np.mean(snr, 0))
+plt.rcParams['font.size'] = '12'
+my_colors = ['bo', 'b--', 'y*', 'y--', 'go', 'g--',
+              'ms', 'm--', 'bs', 'b--', 'rs', 'r--', 'gs', 'g--']
+my_labels = ['40', '50', '100', '150', '300', '500', '1000']
+
+# p = 0
+# plt.figure(figsize=(8, 4))
+# for i in np.arange(0, len(R)):
+#     plt.title('MSE')
+#     plt.plot(SNR, MSE[p, :], my_colors[i+p], label=my_labels[i])
+#     plt.plot(SNR, MSE[p, :], my_colors[i+1+p])
+#     p += 1
+#     plt.legend(loc='upper right')
+
+# plt.xlabel('SNR(db)')
+# plt.savefig('/home/sr05/Method_dev/method_fig/simulation_SNR_trials_effect_MSE')
+
+# p = 0
+# plt.figure(figsize=(8, 4))
+# for i in np.arange(0, len(R)):
+#     plt.title('Relative Error')
+#     plt.plot(SNR, r_error[p, :], my_colors[i+p], label=my_labels[i])
+#     plt.plot(SNR, r_error[p, :], my_colors[i+1+p])
+#     p += 1
+#     plt.legend(loc='upper right')
+
+# plt.xlabel('SNR(db)')
+# plt.savefig('/home/sr05/Method_dev/method_fig/simulation_SNR_trials_effect_re')
 
 
 # p = 0
 # plt.figure(figsize=(8, 4))
 # for i in np.arange(0, len(R)):
-#     plt.title('Explained Variance')
-#     plt.plot(SNR, var[p, :], my_colors[i+p], label=my_labels[i])
-#     plt.plot(SNR, var[p, :], my_colors[i+1+p])
+#     plt.title('R2 score')
+#     plt.plot(SNR, r2[p, :], my_colors[i+p], label=my_labels[i])
+#     plt.plot(SNR, r2[p, :], my_colors[i+1+p])
 #     p += 1
-#     plt.legend(loc='upper left')
+#     plt.legend(loc='upper right')
 
 # plt.xlabel('SNR(db)')
-# plt.savefig(
-#     '/home/sr05/Method_dev/method_fig/simulation_SNR_trials_effect_var-50voxels')
+# plt.savefig('/home/sr05/Method_dev/method_fig/simulation_SNR_trials_effect_r2')
+
+
+p = 0
+plt.figure(figsize=(8, 4))
+for i in np.arange(0, len(R)):
+    plt.title('Explained Variance')
+    plt.plot(SNR, var[p, :], my_colors[i+p], label=my_labels[i])
+    plt.plot(SNR, var[p, :], my_colors[i+1+p])
+    p += 1
+    plt.legend(loc='upper left')
+
+plt.xlabel('SNR(db)')
+plt.savefig(
+    '/home/sr05/Method_dev/method_fig/simulation_SNR_trials_effect_var-50voxels')
 
 
 # # p = 0

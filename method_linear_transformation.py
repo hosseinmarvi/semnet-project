@@ -89,8 +89,8 @@ def method_linear_transformation_io(epoch, inv_fname_epoch, labels, sub_to,
         n_vertices, n_timepoints = stc[0].in_label(labels[roi_idx]).data.shape
         x = np.zeros([len(stc), n_vertices, n_timepoints])
         # creates output array of size (trials x vertices x timepoints)
-        for n_trial, trial in enumerate(stc):
-            pattern = trial.in_label(labels[roi_idx]).data
+        for n_trial, stc_trial in enumerate(stc):
+            pattern = stc_trial.in_label(labels[roi_idx]).data
             x[n_trial, :, :] = pattern
 
         output[i] = x
@@ -101,7 +101,7 @@ def method_linear_transformation(x, y, normalize):
     # computes the explained_variance of different latencies
 
     gof = {}
-    # initialize the explained variance array of size timepoints X timepoints
+    # initialize the explained variance array of size n_timepoints X n_timepoints
     gof_explained_variance = np.zeros([x.shape[-1], x.shape[-1]])
     for t1 in np.arange(x.shape[-1]):
         for t2 in np.arange(x.shape[-1]):
