@@ -54,83 +54,63 @@ from sklearn.pipeline import make_pipeline
 
 ###########################################################################
 normalize = True
-r, c = [200, 50]
+r, c = [50, 100]
 y1 = np.zeros([r, c])
 hidden_layer_sizes = 100
 
 noise = np.random.normal(0, 1, (r, c))
-T = np.random.normal(0, 1, (c, c))
-X1 = np.random.normal(0, 1, (r, c))
-y1 = np.matmul(X1, T)  # + noise
-# y1 = np.sin(X1)
+T = np.random.normal(0, .5, (c, c))
+X = np.random.normal(0, 1, (r, c))
+Y = np.matmul(X, T) + noise
 
-# y1 = y1 + noise
-# scalerx = StandardScaler()
-# scalery = StandardScaler()
-
-# scalerx.fit(X1)
-# scalery.fit(y1)
-
-# X = scalerx.transform(X1)
-# y = scalerx.transform(y1)
-
-
-# y = np.matmul(X, T)
-# print('SNR: ', np.var(y1)/np.var(noise))
-# score_nh = np.zeros([len(hidden_layer_size), 1])
-
-r = X1.shape[0]
+r = X.shape[0]
+n_splits = 5
 if (r/5) > 10:
     n_splits = 10
-else:
-    n_splits = 5
 
 kf = KFold(n_splits=n_splits)
-MSE_s = np.zeros([n_splits])
+var_s_L = np.zeros([n_splits])
 var_s = np.zeros([n_splits])
-activation = 'identity'
+activation = 'tanh'
 
-for s, (train, test) in enumerate(kf.split(X1, y1)):
+for s, (train, test) in enumerate(kf.split(X, Y)):
     # print(s,train, test)
-    mlp = make_pipeline(StandardScaler(),
-                        MLPRegressor(hidden_layer_sizes=hidden_layer_sizes,
-                                     activation=activation, solver='lbfgs', max_iter=1000))
-    # nn = MLPRegressor(hidden_layer_sizes=(100),
-    #                   activation=activation, solver='lbfgs', max_iter=1000)
-    mlp.fit(X1[train, :], y1[train, :])
-    y_pred = mlp.predict(X1[test, :])
+    mlp = MLPRegressor(hidden_layer_sizes=hidden_layer_sizes,
+                       activation=activation, solver='lbfgs',
+                       max_iter=1000, alpha=1e-04)
+    mlp_L = MLPRegressor(hidden_layer_sizes=hidden_layer_sizes,
+                         activation='identity', solver='lbfgs',
+                         max_iter=1000, alpha=1e-04)
 
-    # fig = plt.figure()
-    # ax1 = fig.add_subplot(111)
-    # ax1.scatter(X1[test, 0], y1[test, 0], s=5, c='b', marker="s", label='real')
-    # ax1.scatter(X1[test, 0], y_pred[:, 0], c='r',
-    #             marker="o", label='NN Prediction')
+    x_train = StandardScaler().fit(
+        X[train, :]).transform(X[train, :])
+    y_train = StandardScaler().fit(
+        Y[train, :]).transform(Y[train, :])
 
-    # plt.legend()
-    # plt.show()
+    x_test = StandardScaler().fit(
+        X[train, :]).transform(X[test, :])
+    y_test = StandardScaler().fit(
+        Y[train, :]).transform(Y[test, :])
 
-    MSE_s[s] = mean_squared_error(y1[test, 0], y_pred[:, 0])
-    var_s[s] = explained_variance_score(y1[test, 1], y_pred[:, 1])
+    mlp.fit(X[train, :], Y[train, :])
+    y_pred = mlp.predict(X[test, :])
 
+    mlp_L.fit(X[train, :], Y[train, :])
+    y_pred_L = mlp_L.predict(X[test, :])
 
+    var_s[s] = explained_variance_score(Y[test, 1], y_pred[:, 1])
+    var_s_L[s] = explained_variance_score(Y[test, 1], y_pred_L[:, 1])
+
+print(f'explained variance: {np.mean(var_s_L)}')
 print(np.mean(var_s))
 
-nn = MLPRegressor(hidden_layer_sizes=hidden_layer_sizes,
-                  activation=activation, solver='lbfgs', max_iter=1000)
-scores = cross_validate(
-    nn, X1, y1, scoring=('explained_variance'), cv=kf, n_jobs=-1)
-score = np.mean(scores['test_score'])
-print(score)
 
-# plt.close('all')
-
-
-from keras.models import Sequential
-from keras.layers import Dense
-model = Sequential()
-input_size = x_train.shape[0]
-model.add(Dense(100, activation="tanh", input_dim=input_size))
-model.add(Dense(input_size , activation="linear"))
-model.compile(optimizer="adam", loss="mse")
-model.fit(x_train, y_train, epochs=25, verbose=1)
-y_pred = model.predict(x_test)
+# from keras.models import Sequential
+# from keras.layers import Dense
+# model = Sequential()
+# input_size = x_train.shape[0]
+# model.add(Dense(100, activation="tanh", input_dim=input_size))
+# model.add(Dense(input_size , activation="linear"))
+# model.compile(optimizer="adam", loss="mse")
+# model.fit(x_train, y_train, epochs=25, verbose=1)
+# y_pred = model.predict(x_test)

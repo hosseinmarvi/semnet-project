@@ -43,9 +43,9 @@ f_down_sampling = 20  # 100Hz, 20Hz
 t_down_sampling = fs/f_down_sampling  # 10ms, 50ms
 i = 10
 hidden_layer_sizes = 50
-activation = 'identity'
-ROI_x = 0
-ROI_y = 5
+activation = 'tanh'
+ROI_x = 2
+ROI_y = 3
 cond = 'fruit'
 normalize = True
 meg = subjects[i]
@@ -92,7 +92,7 @@ GOF_ave = {}
 # initialize the correlation coefficeint array of sizr vertices X 1
 GOF_explained_variance = np.zeros([X.shape[-1], X.shape[-1]])
 for t1 in np.arange(10, 11):
-    for t2 in np.arange(11, 12):
+    for t2 in np.arange(10, 11):
         print('time: ', t1, t2)
         r = X.shape[0]
         if (r/5) > 10:
@@ -104,7 +104,7 @@ for t1 in np.arange(10, 11):
                          normalize=normalize)
         scores = cross_validate(
             regrCV, X[:, :, t2], Y[:, :, t1], scoring=(
-                'neg_mean_squared_error'),
+                'explained_variance'),
             cv=kf, n_jobs=-1)
         print('RR score: ', np.mean(np.abs(scores['test_score'])))
 
@@ -130,32 +130,36 @@ for t1 in np.arange(10, 11):
             y_test = preprocessing.StandardScaler().fit(
                 Y[train, :, t1]).transform(Y[test, :, t1])
 
+            regrCV = RidgeCV(alphas=np.logspace(-4, 4, 100),
+                             normalize=False)
             mlp = MLPRegressor(hidden_layer_sizes=hidden_layer_sizes,
-                                activation=activation, learning_rate='adaptive',
-                                solver='lbfgs', max_iter=1000, alpha = 1e-04)
+                               activation=activation, learning_rate='adaptive',
+                               solver='lbfgs', max_iter=1000, alpha=1e-04)
+
+            regrCV.fit(x_train, y_train)
+            y_pred_RR = regrCV.predict(x_test)
+            var_s[s] = explained_variance_score(y_test, y_pred_RR)
 
             mlp.fit(x_train, y_train)
             y_pred = mlp.predict(x_test)
-            var_s[s] = mean_squared_error(y_test, y_pred)
+            var_s2[s] = explained_variance_score(y_test, y_pred)
 
-            
-            model = Pipeline([('poly', PolynomialFeatures(degree=1)),
-                   ('linear', RidgeCV(fit_intercept=False))])
-            model.fit(x_train, y_train)
-            y_pred = model.predict(x_test)
-            var_s2[s] = mean_squared_error(y_test, y_pred)
-
-        print('Poly score: ', np.mean(var_s2))
-        print('MPL score: ', np.mean(var_s))
-
-            # model = Sequential()
-            # input_size = x_train.shape[0]
-            # model.add(Dense(100, activation="linear", input_dim=input_size))
-            # model.add(Dense(input_size , activation="linear"))
-            # model.compile(optimizer="adam", loss="mse")
-            # model.fit(x_train, y_train, epochs=25, verbose=1)
+            # model = Pipeline([('poly', PolynomialFeatures(degree=1)),
+            #        ('linear', RidgeCV(fit_intercept=False))])
+            # model.fit(x_train, y_train)
             # y_pred = model.predict(x_test)
+            # var_s2[s] = mean_squared_error(y_test, y_pred)
 
+        print('RR score: ', np.mean(var_s))
+        print('MPL score: ', np.mean(var_s2))
+
+        # model = Sequential()
+        # input_size = x_train.shape[0]
+        # model.add(Dense(100, activation="linear", input_dim=input_size))
+        # model.add(Dense(input_size , activation="linear"))
+        # model.compile(optimizer="adam", loss="mse")
+        # model.fit(x_train, y_train, epochs=25, verbose=1)
+        # y_pred = model.predict(x_test)
 
         # mlp = make_pipeline(StandardScaler(),
         #                     MLPRegressor(hidden_layer_sizes=hidden_layer_sizes,
