@@ -67,7 +67,7 @@ def method_linear_transformation_main(cond, roi_y, roi_x, i, normalize):
                                              roi_y)
     print('***Running SN_transformation...')
     # computes the connectivity (explained_variance) of the patterns of roi_x
-    # and roi_y over time
+    # and roi_y over time: roi_x patterns= output[0], roi_y patterns= output[1]
     gof = method_linear_transformation(output[0], output[1], normalize)
     with open(file_name, "wb") as fp:  # Pickling
         pickle.dump(gof, fp)

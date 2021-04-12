@@ -24,20 +24,21 @@ reload(C)
 print(__doc__)
 
 # # wrapper to run python script via qsub. Python3
-fname_wrap = op.join('/', 'home','sr05', 'my_semnet','Python2SLURM.sh')
+fname_wrap = op.join('/', 'home', 'sr05',
+                     'old_semnet/my_semnet', 'Python2SLURM.sh')
 
 # indices of subjects to process
 # sbj_id=np.arange(0,len(C.subjects))
-# sbj_id = np.array([0,1])
-Cond= ['fruit','odour','milk','LD']
-
-# job_list = [
-#     # Connectivity :  Coherence
-#       {'N':   'Connectivity',                  # job name
-#       'Py':  'SN_functional_connectivity_bands_runs_BL',  # Python script
-#       'ss':  sbj_id,                    # subject indices
-#       'mem': '24G',                   # memory for qsub process
-#       'dep': ''}]
+sbj_id = np.array([0, 1])
+# Cond= ['fruit','odour','milk','LD']
+#
+job_list = [
+    # Connectivity :  Coherence
+    {'N':   'Connectivity',                  # job name
+     'Py':  'SN_functional_connectivity_bands_runs',  # Python script
+     'ss':  sbj_id,                    # subject indices
+     'mem': '24G',                   # memory for qsub process
+     'dep': ''}]
 
 # job_list = [
 #     # Connectivity :  Coherence
@@ -48,19 +49,19 @@ Cond= ['fruit','odour','milk','LD']
 #       'dep': ''}]
 
 
-job_list = [
-    # Connectivity :  Coherence
-      {'N':   'transformation_50',                  # job name
-      'Py':  'test_transformation',  # Python script
-      'ss':  Cond,                    # subject indices
-      'mem': '24G',                   # memory for qsub process
-      'dep': ''}]
+# job_list = [
+#     # Connectivity :  Coherence
+#       {'N':   'transformation_50',                  # job name
+#       'Py':  'test_transformation',  # Python script
+#       'ss':  Cond,                    # subject indices
+#       'mem': '24G',                   # memory for qsub process
+#       'dep': ''}]
 
 # directory where python scripts are
-dir_py = op.join('/', 'home', 'sr05','my_semnet')
+dir_py = op.join('/', 'home', 'sr05', 'old_semnet/my_semnet')
 
 # directory for qsub output
-dir_sbatch = op.join('/', 'home', 'sr05','my_semnet','sbatch_out')
+dir_sbatch = op.join('/', 'home', 'sr05', 'old_semnet/my_semnet', 'sbatch_out')
 
 # keep track of qsub Job IDs
 Job_IDs = {}
@@ -84,8 +85,6 @@ for job in job_list:
         file_err = op.join(dir_sbatch,
                            job['N'] + '_' + '%s.err' % str(Ss))
 
-
-
         # sbatch command string to be executed
         sbatch_cmd = 'sbatch \
                         -o %s \
@@ -93,7 +92,7 @@ for job in job_list:
                         --export=pycmd="%s.py %s",subj_idx=%s, \
                         --mem=%s -t 1-00:00:00  -J %s  %s' \
                         % (file_out, file_err, Py, Cf, Ss, mem,
-                            N, fname_wrap)
+                           N, fname_wrap)
 
         # format string for display
         print_str = sbatch_cmd.replace(' ' * 25, '  ')

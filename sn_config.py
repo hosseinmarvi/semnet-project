@@ -20,12 +20,12 @@ import numpy as np
 ##########################################################
 
 # path to maxfiltered raw data
-main_path = '/imaging/rf02/Semnet/'
+main_path = '/imaging/hauk/users/rf02/Semnet/'
 
 # path to filtered raw data
-data_path = '/imaging/sr05/SemNet/SemNetData/'
+data_path = '/imaging/hauk/users/sr05/SemNet/SemNetData/'
 
-label_path = '/imaging/rf02/TypLexMEG/fsaverage/label'
+label_path = '/imaging/hauk/users/rf02/TypLexMEG/fsaverage/label'
 
 # subjects' EMEG directories
 subjects = [
